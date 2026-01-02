@@ -230,3 +230,5 @@ Esta arquitetura foi desenhada para:
 * Permitir evolução futura (ex: API, banco vetorial, cloud)
 
 Ela reflete um projeto realista, com separação clara de responsabilidades e foco em valor de negócio.
+
+Gerado com ChatGPT

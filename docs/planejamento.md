@@ -36,12 +36,6 @@ Construir uma solução capaz de:
 * Recomendações de produtos
 * Comparação de custo e oportunidade
 
-### 3.2 Fora do Escopo
-
-* Análise geográfica no Data App
-* Dashboards espaciais ou mapas
-* Deploy em cloud ou CI/CD avançado
-
 ---
 
 ## 4. Fases do Projeto
@@ -60,6 +54,13 @@ Entrega:
 
 * Arquivos em `/data/raw`
 * Notebook `01_data_generation.ipynb`
+
+### GITHUB
+
+[Data Gerenation] 
+
+* Definir contexto prático (data raw)
+* Criar dataset sintético (data raw)
 
 ---
 
@@ -166,37 +167,7 @@ Entrega:
 
 ---
 
-## 5. Cronograma de Entrega (GitHub Projects)
-
-### Dia 1 – Estrutura e Dados
-
-* Finalizar geração de dados
-* Concluir camada raw e trusted
-
-### Dia 2 – Modelagem e Features
-
-* Criar refined
-* Feature engineering com LLM
-
-### Dia 3 – ML e Similaridade
-
-* Implementar embeddings
-* Validar recomendações
-
-### Dia 4 – Data App
-
-* Construir interface
-* Integrar modelo
-
-### Dia 5 – Polimento e Entrega
-
-* Ajustes finais
-* Revisão de documentação
-* Preparação do repositório
-
----
-
-## 6. Critérios de Sucesso
+## 5. Critérios de Sucesso
 
 * Pipeline funcional e organizado
 * Recomendações coerentes a partir de linguagem natural
@@ -206,7 +177,8 @@ Entrega:
 
 ---
 
-## 7. Observações Finais
+## 6. Observações Finais
 
 Este planejamento prioriza **clareza, foco e viabilidade**, demonstrando capacidade de transformar dados em decisões práticas, com aplicação real em contexto industrial e comercial.
- 
+
+Gerado com ChatGPT
