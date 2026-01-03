@@ -103,20 +103,26 @@ Camada otimizada para:
 
 Contém informações técnicas e comerciais dos rolamentos.
 
-
-| Campo              | Tipo          | Descrição                                                  |
-| ------------------ | ------------- | ---------------------------------------------------------- |
-| product_id (PK)    | string        | Identificador único do produto                             |
-| product_name       | string        | Nome comercial do produto                                  |
-| category           | string        | Categoria principal do produto                             |
-| bearing_type       | string        | Tipo de rolamento                                          |
-| material           | string        | Material de fabricação                                     |
-| load_capacity      | float         | Capacidade de carga suportada                              |
-| max_speed          | float         | Velocidade máxima suportada                                |
-| temperature_limit  | float         | Temperatura máxima de operação                             |
-| technical_features | array<string> | Características técnicas extraídas ou enriquecidas via LLM |
-| unit_cost          | float         | Custo unitário do produto                                  |
-| list_price         | float         | Preço de tabela                                            |
+| Campo                   | Tipo          | Descrição                                                  |
+|-------------------------|---------------|------------------------------------------------------------|
+| product_id (PK)         | string        | Identificador único do produto                            |
+| product_name            | string        | Nome comercial do produto                                 |
+| product_category        | string        | Categoria principal (ex: Rolamentos, Mancais)             |
+| product_subcategory     | string        | Subcategoria (ex: Esférico, Cilíndrico)                   |
+| manufacturer            | string        | Fabricante (ex: SKF, NSK, FAG, Timken, NTN)              |
+| model                   | string        | Modelo do fabricante (ex: MD-859)                         |
+| bearing_type            | string        | Tipo de rolamento técnico                                 |
+| material                | string        | Material de fabricação                                    |
+| load_capacity           | float         | Capacidade de carga suportada (Newtons)                   |
+| max_speed               | int           | Velocidade máxima suportada (RPM)                         |
+| temperature_limit       | int           | Temperatura máxima de operação (°C)                       |
+| problem_type            | string        | Tipo de problema principal que resolve                    |
+| unit_cost               | float         | Custo unitário do produto (R$)                            |
+| list_price              | float         | Preço de tabela (R$)                                      |
+| technical_description   | string        | Descrição técnica completa gerada (Trusted)               |
+| technical_features      | array<string> | Tags categóricas extraídas (Features)                     |
+| supported_problems      | array<string> | Problemas que o produto pode resolver (inferidos)         |
+| llm_product_description | string        | Descrição enriquecida para embeddings (Features)          |
 
 **Objetivo:**
 
@@ -129,22 +135,22 @@ Contém informações técnicas e comerciais dos rolamentos.
 Representa os clientes industriais que compram os produtos.
 
 | Campo                     | Tipo          | Descrição                                           |
-| ------------------------- | ------------- | --------------------------------------------------- |
+|---------------------------|---------------|-----------------------------------------------------|
 | customer_id (PK)          | string        | Identificador único do cliente                      |
 | company_name              | string        | Nome da empresa                                     |
 | industry                  | string        | Setor industrial de atuação                         |
 | company_size              | string        | Porte da empresa (Pequena, Média, Grande)           |
 | maintenance_model         | string        | Modelo de manutenção (Interna, Terceirizada, Mista) |
-| equipment_criticality     | string        | Criticidade dos equipamentos                        |
-| expected_problems         | array<string> | Problemas industriais esperados, derivados do setor |
-| annual_revenue_estimated  | float         | Receita anual estimada                              |
-| maintenance_budget_annual | float         | Orçamento anual de manutenção                       |
-| downtime_cost_per_hour    | float         | Custo estimado de parada por hora                   |
-| preferred_supplier        | boolean       | Indica se a empresa é cliente preferencial          |
+| equipment_criticality     | string        | Criticidade dos equipamentos (Baixa, Média, Alta)   |
+| expected_problems         | array<string> | Problemas esperados por setor industrial            |
+| annual_revenue_estimated  | float         | Receita anual estimada (R$)                         |
+| maintenance_budget_annual | float         | Orçamento anual de manutenção (R$)                  |
+| downtime_cost_per_hour    | float         | Custo estimado de parada por hora (R$)              |
+| preferred_supplier        | boolean       | Indica se é cliente preferencial                    |
 | relationship_start_date   | date          | Início do relacionamento comercial                  |
 | active                    | boolean       | Indica se o cliente está ativo                      |
 | last_updated              | timestamp     | Última atualização do registro                      |
-
+| customer_description      | string        | Descrição do perfil do cliente para matching        |
 
 **Observação:**
 
@@ -171,22 +177,22 @@ Esse campo é fundamental para:
 
 Tabela central de eventos de venda.
 
-| Campo                   | Tipo      | Descrição                       |
-| ----------------------- | --------- | ------------------------------- |
-| sale_id (PK)            | string    | Identificador único da venda    |
-| sale_date               | date      | Data da venda                   |
-| customer_id (FK)        | string    | Referência ao cliente           |
-| product_id (FK)         | string    | Referência ao produto           |
-| quantity                | int       | Quantidade vendida              |
-| unit_price              | float     | Preço unitário praticado        |
-| total_price             | float     | Valor total da venda            |
-| discount_percentage     | float     | Percentual de desconto aplicado |
-| sales_channel           | string    | Canal de venda                  |
-| contract_type           | string    | Tipo de contrato                |
-| payment_terms           | string    | Condições de pagamento          |
-| delivery_lead_time_days | int       | Prazo de entrega                |
-| sale_status             | string    | Status da venda                 |
-| last_updated            | timestamp | Última atualização do registro  |
+| Campo                   | Tipo      | Descrição                                |
+|-------------------------|-----------|------------------------------------------|
+| sale_id (PK)            | string    | Identificador único da venda             |
+| sale_date               | date      | Data da venda                            |
+| customer_id (FK)        | string    | Referência ao cliente (dim_customer)     |
+| product_id (FK)         | string    | Referência ao produto (dim_product)      |
+| quantity                | int       | Quantidade vendida                       |
+| unit_price              | float     | Preço unitário praticado (R$)            |
+| total_price             | float     | Valor total da venda (R$)                |
+| discount_percentage     | int       | Percentual de desconto aplicado          |
+| sales_channel           | string    | Canal de venda                           |
+| contract_type           | string    | Tipo de contrato                         |
+| payment_terms           | string    | Condições de pagamento                   |
+| delivery_lead_time_days | int       | Prazo de entrega em dias                 |
+| sale_status             | string    | Status da venda                          |
+| last_updated            | timestamp | Última atualização do registro           |
 
 **Grão da tabela:**
 
