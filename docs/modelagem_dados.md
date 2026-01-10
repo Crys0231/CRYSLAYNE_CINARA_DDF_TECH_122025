@@ -103,26 +103,26 @@ Camada otimizada para:
 
 Contém informações técnicas e comerciais dos rolamentos.
 
-| Campo                   | Tipo          | Descrição                                                  |
-|-------------------------|---------------|------------------------------------------------------------|
-| product_id (PK)         | string        | Identificador único do produto                            |
-| product_name            | string        | Nome comercial do produto                                 |
-| product_category        | string        | Categoria principal (ex: Rolamentos, Mancais)             |
-| product_subcategory     | string        | Subcategoria (ex: Esférico, Cilíndrico)                   |
-| manufacturer            | string        | Fabricante (ex: SKF, NSK, FAG, Timken, NTN)              |
-| model                   | string        | Modelo do fabricante (ex: MD-859)                         |
-| bearing_type            | string        | Tipo de rolamento técnico                                 |
-| material                | string        | Material de fabricação                                    |
-| load_capacity           | float         | Capacidade de carga suportada (Newtons)                   |
-| max_speed               | int           | Velocidade máxima suportada (RPM)                         |
-| temperature_limit       | int           | Temperatura máxima de operação (°C)                       |
-| problem_type            | string        | Tipo de problema principal que resolve                    |
-| unit_cost               | float         | Custo unitário do produto (R$)                            |
-| list_price              | float         | Preço de tabela (R$)                                      |
-| technical_description   | string        | Descrição técnica completa gerada (Trusted)               |
-| technical_features      | array<string> | Tags categóricas extraídas (Features)                     |
-| supported_problems      | array<string> | Problemas que o produto pode resolver (inferidos)         |
-| llm_product_description | string        | Descrição enriquecida para embeddings (Features)          |
+| Campo                   | Tipo          | Descrição                                                 | Criptografado (Dadosfera) |
+|-------------------------|---------------|-----------------------------------------------------------|---------------------------|
+| product_id (PK)         | string        | Identificador único do produto                            | NÃO                       |
+| product_name            | string        | Nome comercial do produto                                 | NÃO                       |
+| product_category        | string        | Categoria principal (ex: Rolamentos, Mancais)             | NÃO                       |
+| product_subcategory     | string        | Subcategoria (ex: Esférico, Cilíndrico)                   | NÃO                       |
+| manufacturer            | string        | Fabricante (ex: SKF, NSK, FAG, Timken, NTN)               | NÃO                       |
+| model                   | string        | Modelo do fabricante (ex: MD-859)                         | NÃO                       |
+| bearing_type            | string        | Tipo de rolamento técnico                                 | NÃO                       |
+| material                | string        | Material de fabricação                                    | NÃO                       |
+| load_capacity           | float         | Capacidade de carga suportada (Newtons)                   | NÃO                       |
+| max_speed               | int           | Velocidade máxima suportada (RPM)                         | NÃO                       |
+| temperature_limit       | int           | Temperatura máxima de operação (°C)                       | NÃO                       |
+| problem_type            | string        | Tipo de problema principal que resolve                    | NÃO                       |
+| unit_cost               | float         | Custo unitário do produto (R$)                            | SIM                       |
+| list_price              | float         | Preço de tabela (R$)                                      | SIM                       |
+| technical_description   | string        | Descrição técnica completa gerada (camada Trusted)        | -                         |
+| technical_features      | array<string> | Tags categóricas extraídas (Features)                     | -                         |
+| supported_problems      | array<string> | Problemas que o produto pode resolver (Features)          | -                         |
+| llm_product_description | string        | Descrição enriquecida para embeddings (Features)          | -                         |
 
 **Objetivo:**
 
@@ -134,27 +134,26 @@ Contém informações técnicas e comerciais dos rolamentos.
 
 Representa os clientes industriais que compram os produtos.
 
-| Campo                     | Tipo          | Descrição                                           |
-|---------------------------|---------------|-----------------------------------------------------|
-| customer_id (PK)          | string        | Identificador único do cliente                      |
-| company_name              | string        | Nome da empresa                                     |
-| industry                  | string        | Setor industrial de atuação                         |
-| company_size              | string        | Porte da empresa (Pequena, Média, Grande)           |
-| maintenance_model         | string        | Modelo de manutenção (Interna, Terceirizada, Mista) |
-| equipment_criticality     | string        | Criticidade dos equipamentos (Baixa, Média, Alta)   |
-| expected_problems         | array<string> | Problemas esperados por setor industrial            |
-| annual_revenue_estimated  | float         | Receita anual estimada (R$)                         |
-| maintenance_budget_annual | float         | Orçamento anual de manutenção (R$)                  |
-| downtime_cost_per_hour    | float         | Custo estimado de parada por hora (R$)              |
-| preferred_supplier        | boolean       | Indica se é cliente preferencial                    |
-| relationship_start_date   | date          | Início do relacionamento comercial                  |
-| active                    | boolean       | Indica se o cliente está ativo                      |
-| last_updated              | timestamp     | Última atualização do registro                      |
-| customer_description      | string        | Descrição do perfil do cliente para matching        |
+| Campo                     | Tipo          | Descrição                                           | Criptografado (Dadosfera) |
+|---------------------------|---------------|-----------------------------------------------------|---------------------------|
+| customer_id (PK)          | string        | Identificador único do cliente                      | NÃO                       |
+| company_name              | string        | Nome da empresa                                     | SIM                       |
+| industry                  | string        | Setor industrial de atuação                         | NÃO                       |
+| company_size              | string        | Porte da empresa (Pequena, Média, Grande)           | NÃO                       |
+| maintenance_model         | string        | Modelo de manutenção (Interna, Terceirizada, Mista) | NÃO                       |
+| equipment_criticality     | string        | Criticidade dos equipamentos (Baixa, Média, Alta)   | NÃO                       |
+| expected_problems         | array<string> | Problemas esperados por setor industrial (Features) | -                         |
+| annual_revenue_estimated  | float         | Receita anual estimada (R$)                         | SIM                       |
+| maintenance_budget_annual | float         | Orçamento anual de manutenção (R$)                  | SIM                       |
+| downtime_cost_per_hour    | float         | Custo estimado de parada por hora (R$)              | SIM                       |
+| preferred_supplier        | boolean       | Indica se é cliente preferencial                    | NÃO                       |
+| relationship_start_date   | date          | Início do relacionamento comercial                  | NÃO                       |
+| active                    | boolean       | Indica se o cliente está ativo                      | NÃO                       |
+| last_updated              | timestamp     | Última atualização do registro                      | NÃO                       |
 
 **Observação:**
 
-O campo **expected_problems** foi incluído para resolver um gap conceitual identificado no projeto:
+O campo **expected_problems** foi incluído (gerado no arquivo 03, tratado no 04) para resolver um gap conceitual identificado no projeto:
 clientes industriais não compram produtos, mas soluções para problemas operacionais.
 
 Esse atributo é derivado do setor (industry) e representa os problemas mais comuns enfrentados por empresas daquele segmento, como:
@@ -177,22 +176,22 @@ Esse campo é fundamental para:
 
 Tabela central de eventos de venda.
 
-| Campo                   | Tipo      | Descrição                                |
-|-------------------------|-----------|------------------------------------------|
-| sale_id (PK)            | string    | Identificador único da venda             |
-| sale_date               | date      | Data da venda                            |
-| customer_id (FK)        | string    | Referência ao cliente (dim_customer)     |
-| product_id (FK)         | string    | Referência ao produto (dim_product)      |
-| quantity                | int       | Quantidade vendida                       |
-| unit_price              | float     | Preço unitário praticado (R$)            |
-| total_price             | float     | Valor total da venda (R$)                |
-| discount_percentage     | int       | Percentual de desconto aplicado          |
-| sales_channel           | string    | Canal de venda                           |
-| contract_type           | string    | Tipo de contrato                         |
-| payment_terms           | string    | Condições de pagamento                   |
-| delivery_lead_time_days | int       | Prazo de entrega em dias                 |
-| sale_status             | string    | Status da venda                          |
-| last_updated            | timestamp | Última atualização do registro           |
+| Campo                   | Tipo      | Descrição                                | Criptografado (Dadosfera) |
+|-------------------------|-----------|------------------------------------------|---------------------------|
+| sale_id (PK)            | string    | Identificador único da venda             | NÃO                       |
+| sale_date               | date      | Data da venda                            | NÃO                       |
+| customer_id (FK)        | string    | Referência ao cliente (dim_customer)     | SIM                       |
+| product_id (FK)         | string    | Referência ao produto (dim_product)      | NÃO                       |
+| quantity                | int       | Quantidade vendida                       | NÃO                       |
+| unit_price              | float     | Preço unitário praticado (R$)            | SIM                       |
+| total_price             | float     | Valor total da venda (R$)                | SIM                       |
+| discount_percentage     | int       | Percentual de desconto aplicado          | SIM                       |
+| sales_channel           | string    | Canal de venda                           | NÃO                       |
+| contract_type           | string    | Tipo de contrato                         | NÃO                       |
+| payment_terms           | string    | Condições de pagamento                   | NÃO                       |
+| delivery_lead_time_days | int       | Prazo de entrega em dias                 | NÃO                       |
+| sale_status             | string    | Status da venda                          | NÃO                       |
+| last_updated            | timestamp | Última atualização do registro           | NÃO                       |
 
 **Grão da tabela:**
 

@@ -1,0 +1,143 @@
+# Requirements for Data Pipeline - Rolamentos Industriais
+# Fases 1-8 | Python 3.8+
+# Data: 2026-01-09
+
+
+# INSTALL: pip install -r requirements.txt
+
+# ============================================================================
+# CORE DATA PROCESSING
+# ============================================================================
+
+pandas==2.1.4
+numpy==1.24.3
+pyarrow==14.0.1
+openpyxl==3.1.2
+
+# ============================================================================
+# DATA QUALITY & VALIDATION
+# ============================================================================
+
+soda-core==3.0.45
+soda-core-pandas==3.0.45
+pydantic==2.5.2
+jsonschema==4.20.0
+
+# ============================================================================
+# MACHINE LEARNING & NLP
+# ============================================================================
+
+scikit-learn==1.3.2
+scipy==1.11.4
+nltk==3.8.1
+
+# Optional: Advanced ML (for scaling to production)
+# hnswlib==0.8.0        # Fast similarity search (optional)
+# faiss-cpu==1.7.4.post1  # Facebook AI Similarity Search (optional)
+
+# ============================================================================
+# VISUALIZATION & PLOTTING
+# ============================================================================
+
+matplotlib==3.8.2
+seaborn==0.13.0
+plotly==5.18.0
+
+# ============================================================================
+# WEB FRAMEWORKS & API
+# ============================================================================
+
+streamlit==1.29.0
+fastapi==0.105.0
+uvicorn==0.24.0
+pydantic-settings==2.1.0
+
+# ============================================================================
+# NOTEBOOKS & INTERACTIVE
+# ============================================================================
+
+jupyter==1.0.0
+jupyterlab==4.0.9
+ipython==8.18.1
+ipywidgets==8.1.1
+
+# ============================================================================
+# DEVELOPMENT & TESTING
+# ============================================================================
+
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.12.0
+flake8==6.1.0
+mypy==1.7.1
+pylint==3.0.3
+
+# ============================================================================
+# UTILITIES
+# ============================================================================
+
+python-dotenv==1.0.0
+requests==2.31.0
+tqdm==4.66.1
+loguru==0.7.2
+pyyaml==6.0.1
+
+# ============================================================================
+# DATABASE & STORAGE (Optional)
+# ============================================================================
+
+# sqlalchemy==2.0.23        # For ORM/database interactions
+# psycopg2-binary==2.9.9    # For PostgreSQL
+# boto3==1.34.0             # For AWS S3 (optional)
+
+# ============================================================================
+# SECURITY (Optional)
+# ============================================================================
+
+# cryptography==41.0.7      # For AES-256 encryption
+# python-jose==3.3.0        # For JWT tokens in API
+
+# ============================================================================
+# DEPLOYMENT (Optional)
+# ============================================================================
+
+# docker==7.0.0             # Docker SDK
+# gunicorn==21.2.0          # Production WSGI server
+# supervisord==4.2.5        # Process monitoring
+
+# ============================================================================
+# NOTES
+# ============================================================================
+#
+# CORE STACK (Obrigatório):
+#   - pandas, numpy, pyarrow
+#   - scikit-learn, scipy
+#   - matplotlib, seaborn
+#
+# DATA QUALITY (Recomendado):
+#   - soda-core para validações
+#   - pydantic para schemas
+#
+# WEB APP (Fase 7):
+#   - streamlit para interface
+#
+# API REST (Fase 8):
+#   - fastapi, uvicorn para API
+#   - pydantic para models
+#
+# DEV (Recomendado):
+#   - pytest para testes
+#   - black/flake8 para lint
+#   - jupyter para notebooks
+#
+# PRODUCTION (Opcional):
+#   - hnswlib/faiss para escalar busca
+#   - cryptography para segurança
+#   - docker/gunicorn para deploy
+#
+# ============================================================================
+# Gerado com Perplexity
+
+
+
+
