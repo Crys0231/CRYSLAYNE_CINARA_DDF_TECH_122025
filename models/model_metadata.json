@@ -1,0 +1,14 @@
+{
+  "model_type": "TfidfVectorizer + CosineSimilarity",
+  "training_date": "2026-01-10T20:05:38.702681",
+  "num_products": 10000,
+  "vocab_size": 1000,
+  "tfidf_params": {
+    "max_features": 1000,
+    "stop_words": "portuguese",
+    "min_df": 2,
+    "max_df": 0.8
+  },
+  "test_queries": 5,
+  "status": "production"
+}
