@@ -1,5 +1,11 @@
 # Modelagem de Dados - DDF Tech 2025 - Data Driven Bearings
 
+**Data:** 11/01/2026 
+**Status Geral:** **FASES 1-6 PRODUCTION READY**  
+**Responsável:** Cryslayne Cinara   
+**Versão:** 2.0
+
+---
 ## 1. Objetivo da Modelagem
 
 A modelagem de dados deste projeto tem como objetivo estruturar informações de **catálogo técnico de rolamentos**, **vendas** e **clientes** de forma analítica, permitindo:
@@ -127,6 +133,10 @@ Contém informações técnicas e comerciais dos rolamentos.
 **Objetivo:**
 
 * Servir como base técnica para comparação de produtos e suporte às recomendações feitas pelo modelo de ML/LLM.
+  
+**supported_problems** Matching entre query do cliente e produtos recomendados. Este campo é fundamental para o modelo TF-IDF, pois contém os problemas que cada produto resolve (vibração, desgaste, superaquecimento, contaminação). Permite que recomendações sejam baseadas em contexto técnico.
+
+**llm_product_description** Base para vetorização TF-IDF. Combinada com supportedproblems, fornece o vocabulário completo para cálculo de similaridade coseno entre query do cliente e produtos.
 
 ---
 
@@ -206,38 +216,88 @@ Permitir análises históricas, validação de padrões de compra e apoio às re
 
 ## 6. Integração com Machine Learning e GenAI
 
-As colunas technical_features são derivadas a partir dos campos textuais e categóricos do produto (technical_description, problem_types, applications), utilizando LLMs para normalização semântica, classificação técnica e enriquecimento de atributos.
+**Fases 1-5 - Feature Engineering com LLM + EDA**
+
+A coluna technical_features é derivada a partir dos campos textuais e categóricos do produto (technical_description, problem_types), utilizando LLMs para normalização semântica, classificação técnica e enriquecimento de atributos.
+
+**Fase 5 - EDA Analysis**
+
+Análise exploratória completa gerou insights críticos para o modelo:
+**Produtos:** Distribuição uniforme (20% cada tipo), independência entre atributos técnicos (|r| < 0.02)
+**Clientes:** 8 indústrias equilibradas, Siderurgia líder (13.4%), 3 modelos manutenção
+**Vendas:** 3 canais com receita idêntica (~33% cada), 75% conclusão
+**Problemas:** Vibração crítica (Siderurgia 4.898), Contaminação equilibrada (25.6% produtos)
+**Correlações:** Preço/Volume = -0.015 (independentes), validando premium pricing
+
+**Fase 6 - Modelo de Similaridade TF-IDF**
+
+Integração com modelo implementado em `src/recommendation_engine.py`:
+**Input:** Combinação de technical_description + supported_problems
+**Processamento:** TfidfVectorizer (1000 features) + CosineSimilarity
+**Output:** Top-K produtos com scores 31.6%-33.0%
+**Performance:** <3ms por recomendação
+**Acurácia:** 9/9 automatizados (100%), 5/5 queries de teste
 
 A modelagem foi pensada para suportar os seguintes casos:
-
-* Similaridade entre produtos baseada em características técnicas
-* Matching entre problema descrito em linguagem natural e produtos do catálogo
-* Análises de custo vs oportunidade
-
-As features extraídas via LLM são armazenadas na dimensão de produto, permitindo:
-
-* Reuso das features
-* Redução de custo computacional
-* Consistência entre análises
+**Suporte multi-canal** (Direct, Distributor, Representative)
+**Segmentação de clientes** (Alto/Médio/Baixo Valor)
+**Similaridade entre produtos** baseada em características técnicas
+**Matching entre problema** descrito em linguagem natural e produtos do catálogo
+**Análises de custo vs oportunidade** para decisões comerciais
+**Recomendações automáticas** via API REST com latência baixa
 
 ---
 
 ## 7. Visões Analíticas Derivadas
 
-A partir do modelo, são possíveis pelo menos duas visões analíticas principais:
+### 7.1 Visão Comercial (Análise de Vendas)
+- Vendas por categoria de produto
+- Evolução temporal de faturamento
+- Produtos mais vendidos
+- Clientes com maior volume de compra
 
-### 7.1 Visão Comercial
+**Resultados Fase 5:**
+- Receita total: R$ 3.797.368.297
+- Ticket médio: R$ 31.644
+- Canais equilibrados: 33% cada (Direct, Distributor, Representative)
+- Série temporal: Estável 2023-2025 com ±10% variação
+- Top 20 produtos: 8% do faturamento
 
-* Vendas por categoria de produto
-* Evolução temporal de faturamento
-* Produtos mais vendidos
-* Clientes com maior volume de compra
+### 7.2 Visão Técnica - Oportunidade
+- Produtos recomendados por tipo de problema
+- Comparação de custo entre soluções
+- Identificação de oportunidades de upsell
 
-### 7.2 Visão Técnica / Oportunidade
+**Resultados Fase 5:**
+- 4 problemas técnicos mapeados (25% cobertura cada)
+- Vibração: crítica em Siderurgia (4.898 vendas)
+- Margem média: 720% (produto de baixo custo + alto markup)
+- 10 produtos com baixa performance (2-3 vendas em 2 anos)
+- Cross-sell: Vibração → Contaminação (30.7% dos clientes)
 
-* Produtos recomendados por tipo de problema
-* Comparação de custo entre soluções
-* Identificação de oportunidades de upsell
+### 7.3 Visão de Recomendação - Fase 6
+Baseada no modelo TF-IDF implementado, esta visão permite:
+
+| Capacidade | Descrição | Entrada | Saída |
+
+| **Recomendação por Problema** | Identifica produtos que resolvem problema | Query em linguagem natural | Top-K com scores |
+| **Ranking de Relevância** | Ordena por similaridade técnica | Descrição do problema | Scores 31.6%-33.0% |
+| **Suporte Multi-Idioma** | Português, inglês, espanhol | Qualquer idioma | Recomendações consistentes |
+| **Batch Processing** | Múltiplas queries | Array de queries | Array de recomendações |
+| **API Metadata** | Info sobre modelo | GET /api/v1/metadata | JSON com TF-IDF params |
+
+**Tecnologia:**
+- Modelo: scikit-learn (TfidfVectorizer + CosineSimilarity)
+- Produtos: 10.000 indexados
+- Features: 1.000 termos únicos
+- Latência: <3ms por recomendação
+- Testes: 9/9 automatizados (100%)
+
+**Casos de Uso:**
+1. Cliente: "Máquina vibrando muito"
+2. API recomenda: [Rolamento 9412 (0.328), Rolamento 5637 (0.327), ...]
+3. Data App: Cards com produtos, especificações, preços
+4. Usuário: Comparar custo vs benefício, fazer pedido
 
 ---
 
@@ -260,9 +320,17 @@ A modelagem proposta atende ao objetivo do projeto ao equilibrar:
 
 Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o caminho entre **dados técnicos complexos** e **valor de negócio**.
 
+---
+
 ## Informações do Projeto
 
 - **Projeto:** DDF Tech 2025 - Data Driven Bearings
+- **Escopo:** 8 Fases planejadas, 6 concluídas
+- **Status:** **FASES 1-6 PRODUCTION READY**
 - **Responsável:** Cryslayne Cinara
+- **Data de Atualização:** 11 de Janeiro de 2026
+- **Versão:** 2.0
 
-Gerado com ChatGPT
+---
+
+**Gerado com ChatGPT, Perplexity e análise estratégica de projeto**
