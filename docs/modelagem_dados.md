@@ -1,4 +1,4 @@
-# Modelagem de Dados
+# Modelagem de Dados - DDF Tech 2025 - Data Driven Bearings
 
 ## 1. Objetivo da Modelagem
 
@@ -259,5 +259,10 @@ A modelagem proposta atende ao objetivo do projeto ao equilibrar:
 * Integração com IA e Data Apps
 
 Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o caminho entre **dados técnicos complexos** e **valor de negócio**.
+
+## Informações do Projeto
+
+- **Projeto:** DDF Tech 2025 - Data Driven Bearings
+- **Responsável:** Cryslayne Cinara
 
 Gerado com ChatGPT

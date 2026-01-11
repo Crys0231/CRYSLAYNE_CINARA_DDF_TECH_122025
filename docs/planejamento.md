@@ -1,4 +1,4 @@
-# Planejamento do Projeto
+# Planejamento do Projeto - DDF Tech 2025 - Data Driven Bearings
 
 ## 1. Visão Geral
 
@@ -180,5 +180,10 @@ Entrega:
 ## 6. Observações Finais
 
 Este planejamento prioriza **clareza, foco e viabilidade**, demonstrando capacidade de transformar dados em decisões práticas, com aplicação real em contexto industrial e comercial.
+
+## Informações do Projeto
+
+- **Projeto:** DDF Tech 2025 - Data Driven Bearings
+- **Responsável:** Cryslayne Cinara
 
 Gerado com ChatGPT

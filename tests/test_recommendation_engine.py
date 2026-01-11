@@ -1,7 +1,10 @@
-# test_recommendation_engine.py (executar uma vez)
+import sys
+import os
+# adicionar a pasta src no path
+sys.path.insert(0, os.path.abspath('../src'))
 
 import pandas as pd
-from src.recommendation_engine import RecommendationEngine
+from recommendation_engine import RecommendationEngine
 
 # 1. Carregar dados
 print("1. Carregando dados...")
