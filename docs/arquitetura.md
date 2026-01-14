@@ -270,8 +270,7 @@ projeto-ddf-tech-2025/
 │
 ├── src/
 │   ├── recommendation_engine.py
-│   ├── api.py
-│   └── utils.py
+│   └── api.py
 │
 ├── models/
 │   ├── recommendation_engine.pkl  # TF-IDF modelo (15.9 MB)
@@ -291,7 +290,7 @@ projeto-ddf-tech-2025/
 │   └── monitoring-guia.md
 │
 ├── outputs/
-│   └── [20+ visualizações PNG/SVG]
+│   └── [20+ visualizações PNG]
 │
 ├── requirements.txt
 ├── README.md
