@@ -1,382 +1,367 @@
+# -*- coding: utf-8 -*-
+"""
+Data Driven Bearings - Recomendador Inteligente de Rolamentos
+Página Principal - Dados Reais + Cores Consistentes
+"""
 import streamlit as st
 import sys
 import os
+import logging
 from datetime import datetime
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
-# ============================================================================
-# CONFIG - TEMA ESCURO
-# ============================================================================
-
+# CONFIG
 st.set_page_config(
-    page_title="DDF Tech 2025 - Recomendador de Rolamentos",
+    page_title="Data Driven Bearings",
     page_icon="⚙️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Tema escuro matplotlib
-plt.style.use('dark_background')
-
-# ============================================================================
-# CSS ESCURO
-# ============================================================================
-
-st.markdown("""
-<style>
-    :root {
-        --bg: #0E1117;
-        --bg2: #161B22;
-        --text: #C9D1D9;
-        --cyan: #00D9FF;
-        --orange: #FF8C00;
-        --green: #3FB950;
-    }
-    
-    body { background-color: var(--bg); color: var(--text); }
-    .main { background-color: var(--bg); }
-    .stSidebar { background-color: var(--bg2); }
-    
-    .main-header {
-        background: linear-gradient(135deg, var(--cyan) 0%, var(--orange) 100%);
-        padding: 2rem;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 217, 255, 0.2);
-    }
-    
-    .stButton button {
-        background: linear-gradient(135deg, var(--cyan) 0%, #0096B8 100%);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
-        font-weight: 600;
-    }
-    
-    .stTextArea textarea {
-        background-color: var(--bg2);
-        border: 2px solid #444;
-        color: var(--text);
-    }
-    
-    .stTextArea textarea:focus {
-        border-color: var(--cyan);
-    }
-    
-    .stMetric { background-color: var(--bg2); border-left: 4px solid var(--cyan); padding: 1rem; }
-</style>
-""", unsafe_allow_html=True)
-
-# ============================================================================
+# Configurar logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('logs/app.log'),
+        logging.StreamHandler()
+    ]
+)
 # IMPORTS
-# ============================================================================
-
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-try:
-    from src.recommendation_engine import RecommendationEngine
-except ImportError:
-    st.error("❌ RecommendationEngine não encontrada")
-    st.stop()
-
-try:
-    from data_app.utils.data_loader import load_products_data
-except ImportError:
-    st.error("❌ data_loader não encontrada")
-    st.stop()
-
-# ============================================================================
-# CACHE
-# ============================================================================
 from src.recommendation_engine import RecommendationEngine
 from data_app.utils.data_loader import load_products_data
+from data_app.components.sidebar import render_sidebar
+from data_app.components.layout import get_global_css, render_footer, render_custom_divider
 
+# CACHE
 @st.cache_resource
 def init_engine():
     try:
-        # 1) Carregar dados de produtos
         products_df = load_products_data()
-
-        # 2) Instanciar engine
+        if products_df is None or products_df.empty:
+            return None
         engine = RecommendationEngine()
-
-        # 3) Treinar OU carregar modelo
-        # opção A: treinar toda vez a partir do DataFrame
         engine.fit(products_df, text_column="full_description")
-
-        # opção B: se você já tiver salvo um .pkl em disco:
-        # engine = RecommendationEngine.load_model("models/recommendation_engine.pkl")
-
         return engine
     except Exception as e:
-        st.error(f"❌ Erro ao inicializar engine: {e}")
+        st.error(f"❌ Erro ao inicializar: {e}")
         return None
-
 
 @st.cache_data
 def load_data():
     try:
-        data = load_products_data()
-        if data is not None and not data.empty:
-            st.success(f"✅ {len(data)} produtos carregados")
-        return data
+        return load_products_data()
     except Exception as e:
-        st.error(f"❌ Erro: {e}")
+        st.error(f"❌ Erro ao carregar dados: {e}")
         return None
 
-# ============================================================================
 # SESSION STATE
-# ============================================================================
-
 if 'engine' not in st.session_state:
-    st.session_state.engine = init_engine()
+    with st.spinner("⚙️ Inicializando sistema..."):
+        st.session_state.engine = init_engine()
 
 if 'products_data' not in st.session_state:
     st.session_state.products_data = load_data()
 
-if 'history' not in st.session_state:
-    st.session_state.history = []
+# APLICAR ESTILO GLOBAL PADRONIZADO
+st.markdown(get_global_css(), unsafe_allow_html=True)
 
-if 'last_results' not in st.session_state:
-    st.session_state.last_results = None
-
-if 'last_query' not in st.session_state:
-    st.session_state.last_query = None
+# SIDEBAR - CONFIGURAÇÕES E CONTATO
+render_sidebar()
 
 # ============================================================================
-# SIDEBAR
-# ============================================================================
-
-with st.sidebar:
-    st.title("⚙️ Configurações")
-    st.divider()
-    
-    st.subheader("📊 Sistema")
-    col_s1, col_s2 = st.columns(2)
-    with col_s1: st.metric("🎯 Acurácia", "99.7%")
-    with col_s2: st.metric("⚡ Latência", "<3ms")
-    
-    col_s3, col_s4 = st.columns(2)
-    with col_s3: st.metric("📦 Produtos", "10K+")
-    with col_s4: st.metric("✅ Status", "Ready")
-    
-    st.divider()
-    
-    st.subheader("🔍 Filtros")
-    with st.expander("💰 Preço", expanded=False):
-        st.number_input("Mín (R$)", value=0, step=100)
-        st.number_input("Máx (R$)", value=10000, step=100)
-    
-    st.divider()
-    st.caption("DDF Tech 2025 • v2.0")
-
-# ============================================================================
-# HEADER
+# HEADER - HERO SECTION
 # ============================================================================
 
 st.markdown("""
-<div class="main-header">
-    <h1>⚙️ DDF Tech 2025</h1>
-    <h3>Recomendador Inteligente de Rolamentos</h3>
-    <p>Tecnologia de IA em tempo real</p>
+<div class="hero-section">
+    <div class="hero-title">⚙️ Data Driven Bearings</div>
+    <div class="hero-subtitle">DDF Tech 2025</div>
+    <div class="hero-description">
+        Recomendador Inteligente de Rolamentos Industriais<br>
+        Tecnologia de IA em Tempo Real • Análise Semântica Avançada
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ============================================================================
-# MAIN
-# ============================================================================
-
-col_main, col_stats = st.columns([3, 1], gap="large")
-
-with col_main:
-    st.subheader("🔍 Descreva seu problema")
-    st.caption("💬 Digite em português, inglês ou espanhol")
-    
-    with st.form(key="search_form"):
-        col_input, col_config = st.columns([4, 1])
-        
-        with col_input:
-            user_query = st.text_area(
-                "Descrição:",
-                placeholder="Ex: Preciso de um rolamento para alta vibração em siderurgia...",
-                height=120,
-                label_visibility="collapsed"
-            )
-        
-        with col_config:
-            st.caption("Idioma")
-            language = st.selectbox(
-                "Lang:",
-                ["🇧🇷 Português", "🇺🇸 English", "🇪🇸 Español"],
-                label_visibility="collapsed"
-            )
-            
-            st.caption("Resultados")
-            top_k = st.slider("Qtd:", 1, 20, 10, label_visibility="collapsed")
-        
-        col_btn1, col_btn2 = st.columns([1, 1])
-        
-        with col_btn1:
-            submitted = st.form_submit_button("🔍 Buscar", use_container_width=True)
-        
-        with col_btn2:
-            clear = st.form_submit_button("🔄 Limpar", use_container_width=True)
-    
-    # Busca
-    if submitted and user_query:
-        st.session_state.last_query = user_query
-        
-        with st.spinner("🔄 Analisando..."):
-            try:
-                if st.session_state.engine is None:
-                    st.error("❌ Engine não inicializado")
-                else:
-                    recommendations = st.session_state.engine.recommend(
-                        user_query,
-                        top_k=top_k
-                    )
-                    
-                    st.session_state.last_results = recommendations
-                    st.session_state.history.append({
-                        'query': user_query,
-                        'timestamp': datetime.now(),
-                        'count': len(recommendations)
-                    })
-                    
-                    st.success(f"✅ {len(recommendations)} recomendações!")
-                    st.rerun()
-                    
-            except Exception as e:
-                st.error(f"❌ Erro: {str(e)}")
-    
-    elif clear:
-        st.session_state.last_results = None
-        st.session_state.last_query = None
-        st.rerun()
-    
-    # Resultados
-    if st.session_state.last_results:
-        st.divider()
-        
-        tab1, tab2, tab3, tab4 = st.tabs(["📊 Ranking", "📈 Gráfico", "💾 Exportar", "ℹ️ Detalhes"])
-        
-        with tab1:
-            st.subheader("Top Recomendações")
-            
-            results_data = []
-            for i, rec in enumerate(st.session_state.last_results, 1):
-                results_data.append({
-                    'Rank': i,
-                    'Produto': rec.get('product_name', 'N/A'),
-                    'Score': f"{rec.get('score', 0):.1%}",
-                    'Tipo': rec.get('bearing_type', 'N/A'),
-                    'Preço': f"R$ {rec.get('price', 0):,.2f}",
-                })
-            
-            results_df = pd.DataFrame(results_data)
-            st.dataframe(results_df, use_container_width=True, hide_index=True)
-        
-        with tab2:
-            st.subheader("Comparação de Scores")
-            
-            fig, ax = plt.subplots(figsize=(12, 6))
-            
-            top_n = st.session_state.last_results[:5]
-            names = [rec.get('product_name', 'N/A')[:20] for rec in top_n]
-            scores = [rec.get('score', 0) for rec in top_n]
-            
-            colors = ['#3FB950' if s > 0.5 else '#FFA657' if s > 0.3 else '#F85149' for s in scores]
-            
-            ax.barh(names, scores, color=colors, edgecolor='#00D9FF', linewidth=2)
-            ax.set_xlabel('Score de Similaridade', fontweight='bold')
-            ax.set_title('Top 5 Recomendações', fontweight='bold', fontsize=14)
-            ax.set_xlim(0, 1)
-            
-            for j, score in enumerate(scores):
-                ax.text(score + 0.02, j, f'{score:.1%}', va='center', fontweight='bold')
-            
-            plt.tight_layout()
-            st.pyplot(fig)
-        
-        with tab3:
-            st.subheader("📥 Exportar Resultados")
-            
-            # Preparar dados
-            export_data = []
-            for i, rec in enumerate(st.session_state.last_results, 1):
-                export_data.append({
-                    'Rank': i,
-                    'Produto': rec.get('product_name', 'N/A'),
-                    'Score': f"{rec.get('score', 0):.1%}",
-                    'Preço': f"R$ {rec.get('price', 0):,.2f}",
-                    'Tipo': rec.get('bearing_type', 'N/A'),
-                })
-            
-            export_df = pd.DataFrame(export_data)
-            
-            col_e1, col_e2 = st.columns(2)
-            
-            with col_e1:
-                # CSV
-                csv_data = export_df.to_csv(index=False)
-                st.download_button(
-                    label="📊 Download CSV",
-                    data=csv_data,
-                    file_name=f"recomendacoes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                    mime="text/csv",
-                    use_container_width=True
-                )
-            
-            with col_e2:
-                st.info("💡 PDF: Instale reportlab com `pip install reportlab`")
-            
-            st.divider()
-            st.caption("📋 Dados:")
-            st.dataframe(export_df, use_container_width=True, height=250)
-        
-        with tab4:
-            st.subheader("Detalhes")
-            
-            for i, rec in enumerate(st.session_state.last_results[:5], 1):
-                with st.expander(f"#{i} - {rec.get('product_name', 'N/A')} ({rec.get('score', 0):.1%})"):
-                    col_d1, col_d2, col_d3, col_d4 = st.columns(4)
-                    
-                    with col_d1: st.metric("Score", f"{rec.get('score', 0):.1%}")
-                    with col_d2: st.metric("Preço", f"R$ {rec.get('price', 0):,.0f}")
-                    with col_d3: st.metric("RPM", f"{rec.get('rpm_capacity', 0):,}")
-                    with col_d4: st.metric("Tipo", rec.get('bearing_type', 'N/A'))
-                    
-                    st.write("**Descrição:**")
-                    st.caption(rec.get('technical_description', 'N/A'))
-
-with col_stats:
-    st.subheader("📊 Estatísticas")
-    
-    col_s1, col_s2 = st.columns(2)
-    with col_s1: st.metric("Consultas", len(st.session_state.history))
-    with col_s2: st.metric("Favoritos", "0")
-    
-    st.divider()
-    
-    if st.session_state.history:
-        st.write("### 📋 Histórico")
-        for item in st.session_state.history[-5:]:
-            st.caption(f"🕐 {item['timestamp'].strftime('%H:%M')}")
-            st.caption(f"📌 {item['query'][:40]}...")
-            st.caption(f"✅ {item['count']} resultados")
-            st.divider()
 
 # ============================================================================
-# FOOTER
+# CARACTERÍSTICAS - FEATURE CARDS
 # ============================================================================
 
-st.divider()
-col_f1, col_f2, col_f3 = st.columns(3)
-with col_f1: st.caption("📄 **DDF Tech 2025** - Data Driven Bearings")
-with col_f2: st.caption("⚙️ **Fase 7:** Data App")
-with col_f3: st.caption("✅ **Status:** Production Ready")
+st.markdown('<div class="section-title">✨ Características Principais</div>', unsafe_allow_html=True)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div class="feature-card">
+        <span class="feature-icon">👾</span>
+        <div class="feature-title">IA Avançada</div>
+        <div class="feature-description">
+            Tecnologia TF-IDF de última geração combinada com Cosine Similarity para 
+            recomendações precisas baseadas em análise semântica avançada.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-title">Ultra Rápido</div>
+        <div class="feature-description">
+            Latência inferior a 3ms por recomendação. Processamento otimizado para 
+            resultados instantâneos mesmo com grandes volumes de dados.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <div class="feature-title">Análise Completa</div>
+        <div class="feature-description">
+            Visualizações interativas, gráficos comparativos, rankings detalhados 
+            e exportação de dados em múltiplos formatos para análise aprofundada.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+
+# ============================================================================
+# MÉTRICAS DO SISTEMA - CARDS PROFISSIONAIS
+# ============================================================================
+
+st.markdown('<div class="section-title">📊 Estatísticas do Sistema</div>', unsafe_allow_html=True)
+
+if st.session_state.products_data is not None:
+    products_df = st.session_state.products_data
+    
+    total_products = len(products_df)
+    avg_price = products_df['list_price'].mean() if 'list_price' in products_df.columns else 0
+    max_price = products_df['list_price'].max() if 'list_price' in products_df.columns else 0
+    bearing_types = products_df['bearing_type'].nunique() if 'bearing_type' in products_df.columns else 0
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">📦</div>
+            <div style="font-size: 28px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
+                {total_products:,}
+            </div>
+            <div style="font-size: 14px; color: #94A3B8;">Produtos</div>
+            <div style="font-size: 12px; color: #64748B; margin-top: 8px;">Base carregada</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">⚙️</div>
+            <div style="font-size: 28px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
+                {bearing_types}
+            </div>
+            <div style="font-size: 14px; color: #94A3B8;">Tipos</div>
+            <div style="font-size: 12px; color: #64748B; margin-top: 8px;">Variações</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">💰</div>
+            <div style="font-size: 24px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
+                R$ {avg_price:,.0f}
+            </div>
+            <div style="font-size: 14px; color: #94A3B8;">Preço Médio</div>
+            <div style="font-size: 12px; color: #64748B; margin-top: 8px;">Máx: R$ {max_price:,.0f}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown("""
+        <div class="metric-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">⭐</div>
+            <div style="font-size: 28px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
+                99.7%
+            </div>
+            <div style="font-size: 14px; color: #94A3B8;">Acurácia</div>
+            <div style="font-size: 12px; color: #64748B; margin-top: 8px;">TF-IDF Engine</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+# ============================================================================
+# SOBRE - CARDS INFORMATIVOS
+# ============================================================================
+
+st.markdown('<div class="section-title">🎯 O Que é Data Driven Bearings?</div>', unsafe_allow_html=True)
+
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    st.markdown((
+        '<div style="background: rgba(26, 31, 58, 0.6); border: 1px solid rgba(0, 102, 204, 0.2); '
+        'border-radius: 16px; padding: 28px; line-height: 1.8;">'
+            '<p style="font-size: 16px; color: #E2E8F0; margin-bottom: 20px;">'
+                '<strong style="color: #FFFFFF;">Data Driven Bearings</strong> é uma plataforma inteligente '
+                'que utiliza Inteligência Artificial para recomendar rolamentos industriais baseado em '
+                'análise semântica de problemas técnicos descritos em linguagem natural.'
+            '</p>'
+            '<div style="margin-top: 24px;">'
+                '<h4 style="color: #FFFFFF; font-size: 18px; margin-bottom: 16px;">✨ Funcionalidades Principais:</h4>'
+                '<div style="color: #E2E8F0; font-size: 14px;">'
+                    '<div style="margin-bottom: 12px;">'
+                        '<strong style="color: #00B4D8;">🔍 Busca em Linguagem Natural:</strong> '
+                        'Descreva seu problema técnico e receba recomendações instantâneas'
+                    '</div>'
+                    '<div style="margin-bottom: 12px;">'
+                        '<strong style="color: #00B4D8;">📊 Análise Comparativa:</strong> '
+                        'Gráficos interativos, comparações e rankings detalhados de produtos'
+                    '</div>'
+                    '<div style="margin-bottom: 12px;">'
+                        '<strong style="color: #00B4D8;">💾 Exportação de Dados:</strong> '
+                        'Baixe resultados em CSV para análise adicional'
+                    '</div>'
+                    '<div>'
+                        '<strong style="color: #00B4D8;">⚡ Performance Ultra Rápida:</strong> '
+                        'Respostas em menos de 3ms utilizando tecnologia TF-IDF'
+                    '</div>'
+                '</div>'
+            '</div>'
+            '<div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(0, 102, 204, 0.2);">'
+                '<p style="font-size: 13px; color: #94A3B8;">'
+                    '<strong>Stack Tecnológico:</strong> TF-IDF • Cosine Similarity • Streamlit • Pandas'
+                '</p>'
+            '</div>'
+        '</div>'
+    ), unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="info-box">
+        <h4 style="color: #FFFFFF; font-size: 18px; margin-bottom: 16px; margin-top: 0;">
+            💡 Dica Profissional
+        </h4>
+        <p style="color: #E2E8F0; font-size: 14px; line-height: 1.7; margin-bottom: 16px;">
+            Quanto mais detalhada sua descrição, melhores serão os resultados!
+        </p>
+        <div style="background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 12px; margin-top: 16px;">
+            <div style="color: #EF4444; font-size: 12px; margin-bottom: 8px;">
+                ❌ Exemplo Ruim:
+            </div>
+            <div style="color: #94A3B8; font-size: 12px; font-style: italic;">
+                "Rolamento"
+            </div>
+            <div style="color: #10B981; font-size: 12px; margin-top: 12px; margin-bottom: 8px;">
+                ✅ Exemplo Bom:
+            </div>
+            <div style="color: #E2E8F0; font-size: 12px; font-style: italic;">
+                "Rolamento para máquina com vibração em siderurgia, RPM > 10000, temperatura 80°C"
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+# ============================================================================
+# COMO COMEÇAR - PASSOS VISUAIS
+# ============================================================================
+
+st.markdown('<div class="section-title">🚀 Como Começar em 3 Passos</div>', unsafe_allow_html=True)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div class="step-card">
+        <div style="display: flex; align-items: center; margin-bottom: 16px;">
+            <span class="step-number">1</span>
+            <h3 style="color: #FFFFFF; margin: 0; font-size: 18px;">Descreva seu Problema</h3>
+        </div>
+        <ul style="color: #E2E8F0; font-size: 14px; line-height: 1.8; margin-left: 56px; padding: 0;">
+            <li>Clique em <strong style="color: #00B4D8;">"Recomendações"</strong> no menu lateral</li>
+            <li>Digite uma descrição técnica detalhada do seu problema</li>
+            <li>Use o máximo de informações relevantes</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="step-card">
+        <div style="display: flex; align-items: center; margin-bottom: 16px;">
+            <span class="step-number">2</span>
+            <h3 style="color: #FFFFFF; margin: 0; font-size: 18px;">Visualize Exemplos</h3>
+        </div>
+        <ul style="color: #E2E8F0; font-size: 14px; line-height: 1.8; margin-left: 56px; padding: 0;">
+            <li>Explore exemplos por indústria na página de Recomendações</li>
+            <li>Veja sugestões práticas de como descrever problemas</li>
+            <li>Copie e adapte conforme sua necessidade</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div class="step-card">
+        <div style="display: flex; align-items: center; margin-bottom: 16px;">
+            <span class="step-number">3</span>
+            <h3 style="color: #FFFFFF; margin: 0; font-size: 18px;">Analise Resultados</h3>
+        </div>
+        <ul style="color: #E2E8F0; font-size: 14px; line-height: 1.8; margin-left: 56px; padding: 0;">
+            <li>Ranking de produtos com scores de similaridade</li>
+            <li>Gráficos comparativos interativos</li>
+            <li>Exporte para Excel para análise detalhada</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+# ============================================================================
+# CALL TO ACTION - SEÇÃO DESTACADA
+# ============================================================================
+
+st.markdown("""
+<div class="cta-section">
+    <div class="cta-title">🚀 Pronto para Começar?</div>
+    <div class="cta-description">
+        Acesse a página de <strong>Recomendações</strong> através do menu lateral e 
+        descubra os rolamentos ideais para sua aplicação industrial em segundos.
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Container com padding negativo para posicionar botão dentro do card
+st.markdown('<div style="margin-top: -60px; position: relative; z-index: 10; text-align: center;">', unsafe_allow_html=True)
+
+col1, col2, col3 = st.columns([1.2, 1.6, 1.2])
+with col2:
+    if st.button(
+        "📍 Ir para Recomendações →",
+        use_container_width=True,
+        key="cta_button",
+        type="primary"
+    ):
+        st.switch_page("pages/recommendations.py")
+
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('<div style="margin-top: 40px;"></div>', unsafe_allow_html=True)
+st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+# ============================================================================
+# FOOTER PROFISSIONAL
+# ============================================================================
+
+render_footer()

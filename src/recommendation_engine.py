@@ -1,149 +1,125 @@
-# src/recommendation_engine.py
-
-import pickle
+"""
+RecommendationEngine - Motor de recomendação TF-IDF para rolamentos
+"""
+import pandas as pd
 import numpy as np
-from pathlib import Path
-from typing import List, Dict, Tuple, Optional
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import warnings
+warnings.filterwarnings('ignore')
 
 class RecommendationEngine:
-    """
-    Motor de recomendação baseado em similaridade TF-IDF.
-    Recomenda rolamentos (produtos) baseado em descrição de problema do cliente.
-    """
+    """Engine de recomendação usando TF-IDF"""
     
-    def __init__(self, random_state: int = 42):
+    def __init__(self, max_features=500, ngram_range=(1, 2)):
         """
-        Inicializar engine.
+        Inicializar engine
         
         Args:
-            random_state: Seed para reproduzibilidade
+            max_features: Número máximo de features TF-IDF
+            ngram_range: Range de n-gramas
         """
-        self.vectorizer = None
-        self.product_matrix = None
-        self.products = None
-        self.random_state = random_state
-        
-    def fit(self, products_df, text_column: str = 'full_description') -> 'RecommendationEngine':
+        self.vectorizer = TfidfVectorizer(
+            max_features=max_features,
+            ngram_range=ngram_range,
+            lowercase=True,
+            stop_words='english',
+            analyzer='char'
+        )
+        self.products_df = None
+        self.tfidf_matrix = None
+        self.is_fitted = False
+        print("✅ RecommendationEngine inicializado")
+    
+    def fit(self, products_df, text_column="full_description"):
         """
-        Treinar vectorizer com corpus de produtos.
+        Treinar o engine com dados de produtos
         
         Args:
             products_df: DataFrame com produtos
-            text_column: Coluna a usar (default 'full_description')
-            
-        Returns:
-            Self (para chaining)
+            text_column: Coluna contendo descrições técnicas
         """
-        self.products = products_df.copy()
+        if products_df is None or products_df.empty:
+            raise ValueError("❌ DataFrame vazio")
         
-
-        self.vectorizer = TfidfVectorizer(
-            max_features=1000,
-            lowercase=True,
-            min_df=2,
-            max_df=0.8
-        )
-        # Fit e transformar
-        self.product_matrix = self.vectorizer.fit_transform(
-            self.products[text_column].fillna('')
-        )
+        # Validar coluna
+        if text_column not in products_df.columns:
+            print(f"⚠️ Coluna '{text_column}' não encontrada")
+            print(f"📋 Colunas disponíveis: {products_df.columns.tolist()}")
+            # Usar a primeira coluna de texto disponível
+            text_column = "product_name"
         
-        return self
+        self.products_df = products_df.copy()
+        
+        # Validar e completar coluna de texto
+        if text_column in self.products_df.columns:
+            # Preencher vazios com nome do produto
+            self.products_df[text_column] = self.products_df[text_column].fillna(
+                self.products_df['product_name']
+            )
+        else:
+            self.products_df[text_column] = self.products_df['product_name']
+        
+        # Converter para string
+        descriptions = self.products_df[text_column].astype(str).values
+        
+        # Treinar TF-IDF
+        try:
+            self.tfidf_matrix = self.vectorizer.fit_transform(descriptions)
+            self.is_fitted = True
+            print(f"✅ Engine treinado com {len(self.products_df)} produtos")
+            return True
+        except Exception as e:
+            print(f"❌ Erro ao treinar: {e}")
+            raise
     
-    def recommend(self, query: str, top_k: int = 5, min_score: float = 0.0) -> List[Dict]:
+    def recommend(self, query, top_k=10):
         """
-        Recomendar top-k produtos para uma consulta.
+        Gerar recomendações para uma query
         
         Args:
-            query: String descrevendo o problema/necessidade
-            top_k: Quantos produtos retornar
-            min_score: Score mínimo de similaridade (0-1)
+            query: Descrição do problema/necessidade
+            top_k: Número de recomendações
+        
+        Returns:
+            list: Recomendações ordenadas por score
+        """
+        if not self.is_fitted:
+            raise ValueError("❌ Engine não foi treinado. Use .fit() primeiro")
+        
+        if not query or not isinstance(query, str):
+            raise ValueError("❌ Query inválida")
+        
+        try:
+            # Vetorizar query
+            query_vector = self.vectorizer.transform([query])
             
-        Returns:
-            Lista de dicts com {product_id, product_name, score}
-        """
-        if self.vectorizer is None or self.product_matrix is None:
-            raise ValueError("Engine não foi treinado. Chame fit() primeiro.")
-        
-        # Transformar query
-        query_vector = self.vectorizer.transform([query])
-        
-        # Calcular similaridade
-        similarities = cosine_similarity(query_vector, self.product_matrix)[0]
-        
-        # Top K com filtro
-        indices = np.argsort(-similarities)[:top_k]
-        results = []
-        
-        for idx in indices:
-            score = float(similarities[idx])
-            if score >= min_score:
-                results.append({
-                    'product_id': str(self.products.iloc[idx]['product_id']),
-                    'product_name': str(self.products.iloc[idx]['product_name']),
-                    'score': score
-                })
-        
-        return results
-    
-    def batch_recommend(self, queries: List[str], top_k: int = 5) -> Dict[str, List[Dict]]:
-        """
-        Recomendar para múltiplas consultas em batch.
-        
-        Args:
-            queries: Lista de queries
-            top_k: Quantos produtos por query
+            # Calcular similaridade
+            similarities = cosine_similarity(query_vector, self.tfidf_matrix).flatten()
             
-        Returns:
-            Dict com {query: [recomendações]}
-        """
-        return {
-            query: self.recommend(query, top_k)
-            for query in queries
-        }
-    
-    def save_model(self, path: str) -> None:
-        """
-        Salvar modelo treinado.
-        
-        Args:
-            path: Caminho para salvar .pkl
-        """
-        Path(path).parent.mkdir(parents=True, exist_ok=True)
-        with open(path, 'wb') as f:
-            pickle.dump(self, f)
-    
-    @staticmethod
-    def load_model(path: str) -> 'RecommendationEngine':
-        """
-        Carregar modelo treinado.
-        
-        Args:
-            path: Caminho do arquivo .pkl
+            # Top K
+            top_indices = np.argsort(similarities)[::-1][:top_k]
             
-        Returns:
-            Instância RecommendationEngine
-        """
-        with open(path, 'rb') as f:
-            return pickle.load(f)
-    
-    def get_info(self) -> Dict:
-        """
-        Retornar informações sobre o modelo.
+            # Formatar resultados
+            recommendations = []
+            for idx in top_indices:
+                if similarities[idx] > 0:  # Apenas scores positivos
+                    row = self.products_df.iloc[idx]
+                    recommendations.append({
+                        'product_id': str(row.get('product_id', 'N/A')),
+                        'product_name': str(row.get('product_name', 'N/A')),
+                        'bearing_type': str(row.get('bearing_type', 'N/A')),
+                        'score': float(similarities[idx]),
+                        'price': float(row.get('list_price', row.get('unit_cost', 0))),
+                        'rpm_capacity': int(row.get('max_speed', 0)),
+                        'technical_description': str(row.get('technical_description', 'N/A'))[:200],
+                        'unit_cost': float(row.get('unit_cost', 0)),
+                        'load_capacity': float(row.get('load_capacity', 0)),
+                    })
+            
+            print(f"✅ {len(recommendations)} recomendações geradas (score min: {min([r['score'] for r in recommendations]):.4f})")
+            return recommendations
         
-        Returns:
-            Dict com metadata
-        """
-        return {
-            'status': 'trained' if self.vectorizer else 'untrained',
-            'num_products': len(self.products) if self.products is not None else 0,
-            'vocab_size': len(self.vectorizer.vocabulary_) if self.vectorizer else 0,
-            'tfidf_params': {
-                'max_features': 1000,
-                'stop_words': 'portuguese',
-                'min_df': 2,
-                'max_df': 0.8
-            }
-        }
+        except Exception as e:
+            print(f"❌ Erro ao gerar recomendações: {e}")
+            raise

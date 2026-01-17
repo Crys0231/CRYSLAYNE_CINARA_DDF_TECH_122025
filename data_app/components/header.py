@@ -6,9 +6,9 @@ def render_header():
     
     st.markdown("""
     <div class="header-section">
-        <h1>⚙️ DDF Tech 2025</h1>
-        <h3>Recomendador Inteligente de Rolamentos Industriais</h3>
-        <p>Tecnologia de IA para recomendações precisas em tempo real</p>
+        <h1>⚙️ Data Driven Bearings</h1>
+        <h3>DDF Tech 2025</h3>
+        <p>Recomendador Inteligente de Rolamentos Industriais • Tecnologia de IA para recomendações precisas em tempo real</p>
     </div>
     """, unsafe_allow_html=True)
     

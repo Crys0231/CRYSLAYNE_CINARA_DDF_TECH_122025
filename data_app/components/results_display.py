@@ -1,94 +1,133 @@
+"""Renderiza resultados das recomendações"""
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 def render_results(recommendations, products_data):
     """Renderiza resultados das recomendações"""
     
+    if not recommendations:
+        st.warning("⚠️ Nenhuma recomendação encontrada")
+        return
+    
     st.success(f"✅ Encontradas {len(recommendations)} recomendações")
     st.divider()
-    
+
     # Abas de visualização
     tab1, tab2, tab3 = st.tabs(["📊 Ranking", "📈 Comparação", "💾 Exportar"])
-    
+
     with tab1:
         st.subheader("Top 10 Recomendações")
-        
-        # Criar dataframe com recomendações
-        results_df = pd.DataFrame([
-            {
+
+        # ✅ CORRIGIDO: Sintaxe correta do DataFrame
+        results_data = []
+        for i, rec in enumerate(recommendations[:10]):
+            results_data.append({
                 'Rank': i + 1,
-                'Produto': rec['product_name'],
-                'Score': f"{rec['score']:.1%}",
-                'Preço': f"R$ {rec['price']:,.2f}",
-                'Tipo': rec['bearing_type'],
-            }
-            for i, rec in enumerate(recommendations[:10])
-        ])
-        
-        st.dataframe(results_df, use_container_width=True)
-        
+                'Produto': rec.get('product_name', 'N/A'),
+                'Score': f"{rec.get('score', 0):.1%}",
+                'Preço': f"R$ {rec.get('price', 0):,.2f}",
+                'Tipo': rec.get('bearing_type', 'N/A'),
+            })
+
+        results_df = pd.DataFrame(results_data)
+        st.dataframe(results_df, use_container_width=True, hide_index=True)
+
         # Detalhes de cada recomendação
         st.subheader("Detalhes das Recomendações")
-        
+
         for i, rec in enumerate(recommendations[:5], 1):
-            with st.expander(f"#{i} - {rec['product_name']} (Score: {rec['score']:.1%})"):
+            with st.expander(
+                f"#{i} - {rec.get('product_name', 'N/A')} (Score: {rec.get('score', 0):.1%})"
+            ):
                 col1, col2, col3, col4 = st.columns(4)
-                
+
                 with col1:
-                    st.metric("Score", f"{rec['score']:.1%}")
-                
+                    st.metric("Score", f"{rec.get('score', 0):.1%}")
+
                 with col2:
-                    st.metric("Preço", f"R$ {rec['price']:,.0f}")
-                
+                    # ✅ Preço formatado corretamente
+                    st.metric("Preço", f"R$ {rec.get('price', 0):,.0f}")
+
                 with col3:
-                    st.metric("Tipo", rec['bearing_type'])
-                
+                    st.metric("Tipo", rec.get('bearing_type', 'N/A'))
+
                 with col4:
-                    st.metric("RPM", f"{rec['rpm_capacity']:,}")
-                
+                    st.metric("RPM", f"{rec.get('rpm_capacity', 0):,}")
+
                 st.write("**Descrição Técnica:**")
-                st.caption(rec['technical_description'])
-    
+                st.caption(rec.get('technical_description', 'N/A'))
+
     with tab2:
         st.subheader("Comparação de Produtos")
-        
-        # Gráfico de comparação
-        import matplotlib.pyplot as plt
-        import numpy as np
-        
-        fig, ax = plt.subplots(figsize=(12, 6))
-        
+
+        # ✅ CORRIGIDO: Gráfico reformatado para melhor visualização
         top_5 = recommendations[:5]
-        products = [rec['product_name'][:15] for rec in top_5]
-        scores = [rec['score'] for rec in top_5]
         
-        colors = ['#2ca02c' if score > 0.4 else '#ff7f0e' if score > 0.3 else '#d62728' for score in scores]
-        
-        ax.barh(products, scores, color=colors, edgecolor='black', linewidth=1.5)
-        ax.set_xlabel('Score de Similaridade')
-        ax.set_title('Comparação dos 5 Melhores Resultados')
-        ax.set_xlim(0, 1)
-        
-        for i, score in enumerate(scores):
-            ax.text(score + 0.02, i, f'{score:.1%}', va='center')
-        
-        st.pyplot(fig)
-    
+        if len(top_5) > 0:
+            # Dados para o gráfico
+            products = [rec.get('product_name', 'N/A')[:25] for rec in top_5]
+            scores = [rec.get('score', 0) for rec in top_5]
+            
+            # Cores baseadas no score
+            colors = [
+                '#3FB950' if score > 0.4 
+                else '#FFA657' if score > 0.3 
+                else '#F85149' 
+                for score in scores
+            ]
+
+            # ✅ Aumenta altura para evitar sobreposição de texto
+            fig, ax = plt.subplots(figsize=(14, 8))
+            
+            # Gráfico horizontal para melhor legibilidade
+            bars = ax.barh(products, scores, color=colors, edgecolor='black', linewidth=1.5, height=0.6)
+            
+            # Configurações do gráfico
+            ax.set_xlabel('Score de Similaridade', fontweight='bold', fontsize=12)
+            ax.set_title('Top 5 Melhores Recomendações', fontweight='bold', fontsize=16, pad=20)
+            ax.set_xlim(0, 1)
+            ax.grid(axis='x', alpha=0.3, linestyle='--')
+            
+            # ✅ Adiciona percentual no final da barra
+            for i, (score, product) in enumerate(zip(scores, products)):
+                ax.text(score + 0.03, i, f'{score:.1%}', va='center', fontweight='bold', fontsize=11)
+            
+            # Melhor espaçamento
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+        else:
+            st.info("Sem dados para exibir gráfico")
+
     with tab3:
         st.subheader("Exportar Resultados")
         
-        col1, col2 = st.columns(2)
+        # Criar DataFrame para exportação
+        export_data = []
+        for i, rec in enumerate(recommendations[:10]):
+            export_data.append({
+                'Rank': i + 1,
+                'Produto': rec.get('product_name', 'N/A'),
+                'Score': f"{rec.get('score', 0):.1%}",
+                'Tipo': rec.get('bearing_type', 'N/A'),
+                'Preço': f"R$ {rec.get('price', 0):,.2f}",
+                'RPM': rec.get('rpm_capacity', 0),
+                'Descrição': rec.get('technical_description', 'N/A')[:100],
+            })
         
-        with col1:
-            if st.button("📥 Download CSV", use_container_width=True):
-                csv = results_df.to_csv(index=False)
-                st.download_button(
-                    label="⬇️ Clique para baixar",
-                    data=csv,
-                    file_name="recomendacoes.csv",
-                    mime="text/csv"
-                )
+        export_df = pd.DataFrame(export_data)
         
-        with col2:
-            if st.button("📄 Download PDF", use_container_width=True):
-                st.info("Funcionalidade PDF em desenvolvimento...")
+        # Download CSV
+        csv = export_df.to_csv(index=False, encoding='utf-8-sig')
+        
+        st.download_button(
+            label="📥 Download CSV",
+            data=csv,
+            file_name="recomendacoes_rolamentos.csv",
+            mime="text/csv",
+            use_container_width=True
+        )
+        
+        st.info("💡 Abra o arquivo no Excel para análise completa com formatação")
