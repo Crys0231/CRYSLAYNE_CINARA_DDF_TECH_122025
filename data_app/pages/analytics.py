@@ -1,11 +1,28 @@
-"""Página Analytics - Com dados REAIS do histórico"""
+"""Página Analytics - VERSÃO CORRIGIDA E OTIMIZADA"""
+
+# ============================================================================
+# IMPORTS 
+# ============================================================================
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 from datetime import datetime
-import sys
-import os
+from data_app.components.layout import (
+    get_global_css,
+    render_header,
+    render_sidebar,
+    render_footer,
+    render_custom_divider
+)
+from data_app.utils.session import setup_paths, get_engine, get_data
+from data_app.utils.history import get_history_stats, get_queries_by_hour, ensure_history_exists
+from data_app.utils.plotting import setup_dark_figure
+
+# Setup paths uma única vez
+setup_paths()
+
+# Garantir histórico
+ensure_history_exists()
 
 # ============================================================================
 # CONFIGURAÇÃO
@@ -16,199 +33,159 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
-# ============================================================================
-# IMPORTS
-# ============================================================================
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# Garantir engine está inicializado
+if 'engine' not in st.session_state:
+    with st.spinner("⚙️ Inicializando sistema..."):
+        engine = get_engine()
+        if engine is None:
+            st.error("❌ Não foi possível inicializar o sistema. Tente recarregar a página.")
+            st.stop()
+        st.session_state.engine = engine
 
-try:
-    from data_app.components.sidebar import render_sidebar
-    from data_app.components.layout import (
-        get_global_css, 
-        render_header, 
-        render_footer,
-        render_custom_divider,
-        render_metric_card
-    )
-    from src.recommendation_engine import RecommendationEngine
-    from data_app.utils.data_loader import load_products_data
-except ImportError as e:
-    st.warning(f"⚠️ Alguns módulos não foram importados: {e}")
+# Garantir dados estão carregados
+if 'products_data' not in st.session_state:
+    st.session_state.products_data = get_data()
 
-# ============================================================================
-# CACHE E INICIALIZAÇÃO
-# ============================================================================
-
-@st.cache_resource
-def init_engine():
-    """Inicializa a engine de recomendação"""
-    try:
-        products_df = load_products_data()
-        if products_df is None or products_df.empty:
-            st.error("❌ Erro: Dados de produtos não encontrados")
-            return None
-        engine = RecommendationEngine()
-        engine.fit(products_df, text_column="full_description")
-        return engine
-    except Exception as e:
-        st.error(f"❌ Erro ao inicializar engine: {e}")
-        return None
-
-@st.cache_data
-def load_data():
-    """Carrega os dados de produtos"""
-    try:
-        return load_products_data()
-    except Exception as e:
-        st.error(f"❌ Erro ao carregar dados: {e}")
-        return None
-
-# ============================================================================
-# SESSION STATE - INICIALIZAÇÃO DA ENGINE
-# ============================================================================
-
-# Inicializar engine se não existir
-if 'engine' not in st.session_state or st.session_state.engine is None:
-    with st.spinner("⚙️ Inicializando sistema de recomendação..."):
-        st.session_state.engine = init_engine()
-
-# Inicializar dados se não existir
-if 'products_data' not in st.session_state or st.session_state.products_data is None:
-    st.session_state.products_data = load_data()
-
-# Validação crítica - parar execução se engine não foi inicializada
-if st.session_state.engine is None:
-    st.error("❌ Sistema não inicializado. Por favor, volte à página inicial.")
-    st.stop()
-
-# APLICAR ESTILO GLOBAL
-st.markdown(get_global_css(), unsafe_allow_html=True)
-
-# SIDEBAR - CONFIGURAÇÕES E CONTATO
+# SIDEBAR
 render_sidebar()
 
-# CABEÇALHO PADRONIZADO
-render_header("📊 Analytics e Insights", "Desempenho do Sistema")
+# APLICAR ESTILO GLOBAL PADRONIZADO
+st.markdown(get_global_css(), unsafe_allow_html=True)
 
 # ============================================================================
-# GARANTIR INICIALIZAÇÃO DO HISTÓRICO
+# HEADER
 # ============================================================================
 
-if 'history' not in st.session_state:
-    st.session_state.history = []
+render_header(
+    "Analytics e Insights",
+    "Métricas e estatísticas de consultas",
+    "📊"
+)
 
 # ============================================================================
 # MÉTRICAS REAIS
 # ============================================================================
-
-total_queries = len(st.session_state.history)
-total_results = sum([item.get('count', 0) for item in st.session_state.history])
+history_stats = get_history_stats(st.session_state.history)
 
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.metric(
-        "Consultas Totais", 
-        str(total_queries), 
-        f"+{total_queries}" if total_queries > 0 else "0"
+        "Consultas Totais",
+        str(history_stats['total_queries']),
+        f"+{history_stats['total_queries']}" if history_stats['total_queries'] > 0 else "0"
     )
 
 with col2:
     st.metric("Tempo Médio", "<3ms", "±0ms")
 
 with col3:
-    if total_queries > 0:
-        success_rate = "100%"
-        delta = "+0%"
-    else:
-        success_rate = "0%"
-        delta = "0%"
-    st.metric("Taxa Sucesso", success_rate, delta)
+    success_rate = "100%" if history_stats['total_queries'] > 0 else "0%"
+    st.metric("Taxa Sucesso", success_rate, "0%")
 
 with col4:
     st.metric(
-        "Produtos Recomendados", 
-        str(total_results), 
-        f"+{total_results}" if total_results > 0 else "0"
+        "Produtos Recomendados",
+        str(history_stats['total_results']),
+        f"+{history_stats['total_results']}" if history_stats['total_results'] > 0 else "0"
     )
 
 st.divider()
 
 # ============================================================================
-# ANÁLISE DINÂMICA
+# ANÁLISE DINÂMICA COM GRÁFICOS
 # ============================================================================
-
 if st.session_state.history and len(st.session_state.history) > 0:
     st.subheader("📈 Análise das Consultas")
     
-    # Gráfico de consultas ao longo do tempo
-    st.write("**Distribuição de Consultas por Hora**")
+    col1, col2 = st.columns(2)
     
-    # Extrair horas dos timestamps
-    times = []
-    for item in st.session_state.history:
-        timestamp = item.get('timestamp')
-        if isinstance(timestamp, datetime):
-            times.append(timestamp.hour)
-        elif isinstance(timestamp, str):
-            # Tentar parsear string para datetime
-            try:
-                dt = datetime.strptime(timestamp, '%d/%m %H:%M')
-                times.append(dt.hour)
-            except:
-                pass
+    # ============================================================
+    # GRÁFICO 1: CONSULTAS POR HORÁRIO
+    # ============================================================
+    with col1:
+        st.markdown("#### ⏰ Consultas por Horário")
+        
+        # Obter consultas por hora (função centralizada)
+        from data_app.utils.history import get_queries_by_hour
+        time_counts = get_queries_by_hour(st.session_state.history)
+        
+        if time_counts and len(time_counts) > 0:
+            # Criar gráfico com tema escuro padronizado
+            fig, ax = setup_dark_figure((10, 5))
+            
+            hours = sorted(time_counts.keys())
+            counts = [time_counts[h] for h in hours]
+            
+            ax.bar(
+                hours,
+                counts,
+                color='#0066CC',
+                edgecolor='#00B4D8',
+                linewidth=1.5,
+                width=0.7,
+                alpha=0.8
+            )
+            
+            ax.set_xlabel('Hora do Dia', fontweight='600', fontsize=11, color='#E2E8F0')
+            ax.set_ylabel('Número de Consultas', fontweight='600', fontsize=11, color='#E2E8F0')
+            ax.set_title('Distribuição por Horário', fontweight='600', fontsize=13, 
+                        pad=15, color='#FFFFFF')
+            ax.set_xticks(range(0, 24))
+            ax.grid(axis='y', alpha=0.2, linestyle='--', color='#64748B')
+            
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+            plt.close()
+        else:
+            st.info("💡 Realize mais buscas para ver a distribuição por horário")
     
-    if times:
-        # Contar consultas por hora
-        time_counts = {}
-        for t in times:
-            time_counts[t] = time_counts.get(t, 0) + 1
+    # ============================================================
+    # GRÁFICO 2: TOP TERMOS BUSCADOS
+    # ============================================================
+    with col2:
+        st.markdown("#### 📊 Top Termos Buscados")
         
-        # Criar gráfico
-        fig, ax = plt.subplots(figsize=(12, 5))
-        fig.patch.set_facecolor('#0F172A')
-        ax.set_facecolor('#1A1F3A')
+        word_frequency = history_stats.get('word_frequency', {})
         
-        hours = sorted(time_counts.keys())
-        counts = [time_counts[h] for h in hours]
-        
-        bars = ax.bar(
-            hours, 
-            counts, 
-            color='#0066CC', 
-            edgecolor='#00B4D8', 
-            linewidth=2
-        )
-        
-        ax.set_xlabel('Hora do Dia', fontweight='bold', fontsize=12, color='#E2E8F0')
-        ax.set_ylabel('Número de Consultas', fontweight='bold', fontsize=12, color='#E2E8F0')
-        ax.set_title('Consultas por Hora', fontweight='bold', fontsize=16, pad=20, color='#FFFFFF')
-        ax.set_xticks(range(0, 24))
-        ax.tick_params(colors='#E2E8F0')
-        ax.grid(axis='y', alpha=0.2, linestyle='--', color='#64748B')
-        
-        for spine in ax.spines.values():
-            spine.set_color('#E2E8F0')
-            spine.set_linewidth(0.5)
-        
-        plt.tight_layout()
-        st.pyplot(fig, use_container_width=True)
+        if word_frequency and len(word_frequency) > 0:
+            top_words = sorted(word_frequency.items(), 
+                              key=lambda x: x[1], reverse=True)[:10]
+            
+            if top_words and len(top_words) > 0:
+                fig2, ax2 = setup_dark_figure((10, 5))
+                words = [w[0][:15] for w in top_words]
+                counts = [w[1] for w in top_words]
+                
+                ax2.barh(words, counts, color='#00B4D8', edgecolor='#0066CC', 
+                        linewidth=1.5, alpha=0.8)
+                ax2.set_xlabel('Frequência', fontweight='600', fontsize=11, color='#E2E8F0')
+                ax2.set_ylabel('Termo', fontweight='600', fontsize=11, color='#E2E8F0')
+                ax2.set_title('Palavras Mais Buscadas', fontweight='600', fontsize=13, 
+                             pad=15, color='#FFFFFF')
+                ax2.invert_yaxis()
+                ax2.grid(axis='x', alpha=0.2, linestyle='--', color='#64748B')
+                plt.tight_layout()
+                st.pyplot(fig2, use_container_width=True)
+                plt.close()
+            else:
+                st.info("💡 Realize mais buscas para ver análise de termos")
+        else:
+            st.info("💡 Realize mais buscas para ver análise de termos")
     
     st.divider()
     
     # ============================================================
     # TABELA DE HISTÓRICO DETALHADO
     # ============================================================
-    
     st.subheader("📋 Histórico Detalhado")
     
     history_data = []
     for i, item in enumerate(reversed(st.session_state.history), 1):
         timestamp = item.get('timestamp')
         
-        # Formatar timestamp
+        # Formatar timestamp de forma robusta
         if isinstance(timestamp, datetime):
             time_str = timestamp.strftime('%d/%m %H:%M:%S')
         elif isinstance(timestamp, str):
@@ -216,10 +193,11 @@ if st.session_state.history and len(st.session_state.history) > 0:
         else:
             time_str = 'N/A'
         
+        query_text = item.get('query', 'N/A')
         history_data.append({
             'ID': i,
             'Horário': time_str,
-            'Consulta': item.get('query', 'N/A')[:50] + ('...' if len(item.get('query', '')) > 50 else ''),
+            'Consulta': query_text[:50] + ('...' if len(query_text) > 50 else ''),
             'Resultados': item.get('count', 0)
         })
     
@@ -229,39 +207,31 @@ if st.session_state.history and len(st.session_state.history) > 0:
     # ============================================================
     # ESTATÍSTICAS ADICIONAIS
     # ============================================================
-    
     st.divider()
     
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("### 📈 Estatísticas")
+        st.metric("Média de Resultados/Consulta", f"{history_stats['avg_results']:.1f}")
         
-        # Média de resultados por consulta
-        avg_results = total_results / total_queries if total_queries > 0 else 0
-        st.metric("Média de Resultados/Consulta", f"{avg_results:.1f}")
-        
-        # Consulta mais longa
-        if st.session_state.history:
-            longest_query = max([len(item.get('query', '')) for item in st.session_state.history])
-            st.metric("Maior Consulta (caracteres)", longest_query)
+        longest_query = max([len(item.get('query', '')) for item in st.session_state.history])
+        st.metric("Maior Consulta (caracteres)", longest_query)
     
     with col2:
         st.markdown("### 🕐 Atividade")
         
-        # Última consulta
-        if st.session_state.history:
-            last_item = st.session_state.history[-1]
-            last_timestamp = last_item.get('timestamp')
-            
-            if isinstance(last_timestamp, datetime):
-                last_time = last_timestamp.strftime('%d/%m às %H:%M')
-            else:
-                last_time = str(last_timestamp)
-            
-            st.info(f"🕐 Última consulta: {last_time}")
-            st.info(f"📝 Total de caracteres digitados: {sum([len(item.get('query', '')) for item in st.session_state.history])}")
-
+        last_item = st.session_state.history[-1]
+        last_timestamp = last_item.get('timestamp')
+        
+        if isinstance(last_timestamp, datetime):
+            last_time = last_timestamp.strftime('%d/%m às %H:%M')
+        else:
+            last_time = str(last_timestamp)
+        
+        st.info(f"🕐 Última consulta: {last_time}")
+        total_chars = sum([len(item.get('query', '')) for item in st.session_state.history])
+        st.info(f"🔤 Total de caracteres digitados: {total_chars}")
 else:
     st.info("💡 Nenhuma consulta foi feita ainda. Acesse a aba 'Recomendações' para começar!")
 
@@ -270,7 +240,6 @@ st.divider()
 # ============================================================================
 # ESTATÍSTICAS DO MODELO
 # ============================================================================
-
 st.subheader("⚙️ Estatísticas do Modelo")
 
 col1, col2, col3 = st.columns(3)
@@ -285,18 +254,7 @@ with col3:
     st.metric("Data Quality", "99.7%", "0%")
 
 # ============================================================================
-# DEBUG (OPCIONAL - REMOVA EM PRODUÇÃO)
+# FOOTER
 # ============================================================================
-
-if st.checkbox("🔧 Modo Debug"):
-    st.write("**Session State - History:**")
-    st.json(st.session_state.history)
-
-
-
-# ============================================================================
-# FOOTER PROFISSIONAL
-# ============================================================================
-
 render_custom_divider()
 render_footer()

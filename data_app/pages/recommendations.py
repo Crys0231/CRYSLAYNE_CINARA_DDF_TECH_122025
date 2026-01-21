@@ -1,194 +1,133 @@
-"""Página de recomendações - DESIGN PREMIUM REDESENHADO"""
-import streamlit as st
+"""
+Página de recomendações com dados REAIS do histórico
+"""
+# ============================================================================
+# IMPORTS
+# ============================================================================
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
-import sys
-import os
+import streamlit as st
+import time  # IMPORTANTE: para medir processing_time
 
-st.set_page_config(page_title="Recomendações", layout="wide")
+from data_app.utils.logger import setup_recommendations_logger
+from data_app.utils.session import setup_paths, get_engine, get_data
+from data_app.utils.history import ensure_history_exists
+from data_app.utils.examples import load_examples
 
-# IMPORTS
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+try:
+    from data_app.components.layout import (
+        get_global_css, 
+        render_sidebar,
+        render_header, 
+        render_footer
+    )
+except ImportError as e:
+    st.warning(f"⚠️ Alguns módulos não foram importados: {e}")
 
-from src.recommendation_engine import RecommendationEngine
-from data_app.utils.data_loader import load_products_data
-from data_app.components.sidebar import render_sidebar
-from data_app.components.layout import get_global_css, render_header, render_footer, render_custom_divider
+# Setup paths uma única vez
+setup_paths()
+
+# Garantir histórico
+ensure_history_exists()
 
 # ============================================================================
-# CACHE E INICIALIZAÇÃO
+# IMPORTAR MONITORAMENTO
+# ============================================================================
+try:
+    from monitoring import StreamlitMonitor
+    MONITORING_AVAILABLE = True
+except ImportError:
+    MONITORING_AVAILABLE = False
+    st.warning("⚠️ Sistema de monitoramento não disponível")
+
+
+# ============================================================================
+# CONFIGURAÇÃO
 # ============================================================================
 
-@st.cache_resource
-def init_engine():
-    """Inicializa a engine de recomendação"""
+
+# LOGGER
+logger = setup_recommendations_logger()
+logger.info("=" * 60)
+logger.info("🔍 Página de recomendações carregada")
+logger.info("=" * 60)
+
+st.set_page_config(
+    page_title="Recomendações",
+    page_icon="🔍",
+    layout="wide"
+)
+
+# Garantir engine está inicializado
+if 'engine' not in st.session_state:
+    with st.spinner("⚙️ Inicializando sistema..."):
+        engine = get_engine()
+        if engine is None:
+            st.error("❌ Não foi possível inicializar o sistema. Tente recarregar a página.")
+            st.stop()
+        st.session_state.engine = engine
+
+# Garantir dados estão carregados
+if 'products_data' not in st.session_state:
+    st.session_state.products_data = get_data()
+
+# ============================================================================
+# INICIALIZAR MONITORAMENTO
+# ============================================================================
+
+if MONITORING_AVAILABLE and 'monitor' not in st.session_state:
     try:
-        products_df = load_products_data()
-        if products_df is None or products_df.empty:
-            st.error("❌ Erro: Dados de produtos não encontrados")
-            return None
-        engine = RecommendationEngine()
-        engine.fit(products_df, text_column="full_description")
-        return engine
+        st.session_state.monitor = StreamlitMonitor(
+            session_state=st.session_state
+        )
+        
+        # Configurar baseline do modelo
+        baseline_status = st.session_state.monitor.initialize_baseline()
+        
+        logger.info("Monitor inicializado")
+        logger.info(f"Baseline: {baseline_status['samples']} amostras")
+        logger.info(f"Média: {baseline_status['mean']:.3f}")
+        
     except Exception as e:
-        st.error(f"❌ Erro ao inicializar engine: {e}")
-        return None
+        logger.error(f"❌ Erro ao inicializar monitor: {e}")
+        st.session_state.monitor = None
+
+# Alias para uso mais fácil
+monitor = st.session_state.get('monitor')
+
+# SIDEBAR
+render_sidebar()
+
+# APLICAR ESTILO GLOBAL PADRONIZADO
+st.markdown(get_global_css(), unsafe_allow_html=True)
+
+# ============================================================================
+# CARREGAR EXEMPLOS
+# ============================================================================
 
 @st.cache_data
-def load_data():
-    """Carrega os dados de produtos"""
+def get_examples():
+    """Carrega exemplos com cache para performance"""
     try:
-        return load_products_data()
+        examples = load_examples()
+        # LOGGING
+        logger.info(f"✅ {len(examples)} categorias de exemplos carregadas")
+        return examples
+    except FileNotFoundError as e:
+        # LOGGING DE ERRO
+        logger.error(f"❌ Arquivo de exemplos não encontrado: {e}", exc_info=True)
+        st.error(str(e))
+        return {}
     except Exception as e:
-        st.error(f"❌ Erro ao carregar dados: {e}")
-        return None
+        # LOGGING DE ERRO
+        logger.error(f"❌ Erro ao carregar exemplos: {e}", exc_info=True)
+        st.error(f"❌ Erro ao carregar exemplos: {e}")
+        return {}
 
-# ============================================================================
-# SESSION STATE - INICIALIZAÇÃO DA ENGINE
-# ============================================================================
-
-# Inicializar engine se não existir
-if 'engine' not in st.session_state or st.session_state.engine is None:
-    with st.spinner("⚙️ Inicializando sistema de recomendação..."):
-        st.session_state.engine = init_engine()
-
-# Inicializar dados se não existir
-if 'products_data' not in st.session_state or st.session_state.products_data is None:
-    st.session_state.products_data = load_data()
-
-# Validação crítica - parar execução se engine não foi inicializada
-if st.session_state.engine is None:
-    st.error("❌ Sistema não inicializado. Por favor, volte à página inicial.")
-    st.stop()
-
-# ============================================================================
-# EXEMPLOS POR INDÚSTRIA
-# ============================================================================
-
-EXAMPLES_BY_INDUSTRY = {
-    "🏭 Siderurgia": {
-        "principal_problema": "Vibração",
-        "exemplos": [
-            {
-                "titulo": "Vibração em Alta Velocidade",
-                "descricao": "Máquina com vibração excessiva em siderurgia, RPM 12000-15000, ambiente quente 80°C, carga média, preço máximo R$ 4000"
-            },
-            {
-                "titulo": "Laminador com Contaminação",
-                "descricao": "Laminador com contaminação de pó, vibração moderada, RPM 8000, necessita vedação, orçamento R$ 2500"
-            },
-            {
-                "titulo": "Forno com Alta Temperatura",
-                "descricao": "Rolamento para forno siderúrgico, temperatura acima de 100°C, carga pesada, RPM 5000, ambiente corrosivo"
-            }
-        ]
-    },
-    "🍔 Alimentos": {
-        "principal_problema": "Contaminação",
-        "exemplos": [
-            {
-                "titulo": "Câmara Fria com Umidade",
-                "descricao": "Equipamento em câmara fria com umidade alta, RPM 5000, necessita higiene, temperatura -5°C a 40°C"
-            },
-            {
-                "titulo": "Contaminação por Óleo",
-                "descricao": "Máquina em contato com óleos e graxas alimentares, vibração baixa, RPM 6000, preço até R$ 2000"
-            },
-            {
-                "titulo": "Processamento com Limpeza Frequente",
-                "descricao": "Equipamento de processamento alimentar que requer limpeza constante, resistente a produtos químicos de limpeza, RPM 4000"
-            }
-        ]
-    },
-    "⛏️ Mineração": {
-        "principal_problema": "Abrasividade",
-        "exemplos": [
-            {
-                "titulo": "Peneira Abrasiva",
-                "descricao": "Peneira em mineração com pó abrasivo, vibração alta, RPM 1800, amortecimento importante, orçamento R$ 3500"
-            },
-            {
-                "titulo": "Britador com Impactos",
-                "descricao": "Britador com altos impactos, carga dinâmica, RPM 3000, precisa durabilidade, máximo R$ 5000"
-            },
-            {
-                "titulo": "Transportador com Poeira",
-                "descricao": "Transportador de correia em ambiente de mineração, poeira intensa, vedação especial, RPM 1500, carga pesada"
-            }
-        ]
-    },
-    "📄 Papel e Celulose": {
-        "principal_problema": "Temperatura",
-        "exemplos": [
-            {
-                "titulo": "Secador de Papel",
-                "descricao": "Secador de papel a 100°C, vibração baixa, RPM 4000, resistência térmica essencial, até R$ 3000"
-            },
-            {
-                "titulo": "Máquina com Vapor",
-                "descricao": "Máquina de celulose com vapor, temperatura 60°C, umidade 90%, vibração moderada, RPM 3500"
-            },
-            {
-                "titulo": "Calandra com Alta Temperatura",
-                "descricao": "Rolamento para calandra de papel, temperatura 120°C, alta velocidade, RPM 8000, ambiente úmido"
-            }
-        ]
-    },
-    "🧪 Química": {
-        "principal_problema": "Corrosão",
-        "exemplos": [
-            {
-                "titulo": "Reator Químico",
-                "descricao": "Reator químico com vapores corrosivos, vibração baixa, RPM 2000, material inoxidável recomendado, até R$ 4500"
-            },
-            {
-                "titulo": "Bomba Centrífuga",
-                "descricao": "Bomba centrífuga em processo químico, 80°C, RPM 7000, necessita vedação especial, orçamento R$ 3000"
-            },
-            {
-                "titulo": "Misturador com Produtos Ácidos",
-                "descricao": "Misturador químico com produtos ácidos corrosivos, vedação perfeita necessária, RPM 2500, material resistente"
-            }
-        ]
-    },
-    "⚡ Energia": {
-        "principal_problema": "Confiabilidade",
-        "exemplos": [
-            {
-                "titulo": "Turbina Eólica",
-                "descricao": "Rolamento para turbina eólica, operação contínua, baixa manutenção, RPM variável, ambiente externo, alta confiabilidade"
-            },
-            {
-                "titulo": "Gerador com Alta Carga",
-                "descricao": "Gerador elétrico com alta carga, operação 24/7, temperatura média, RPM 1500, mínimo downtime necessário"
-            },
-            {
-                "titulo": "Ventilador Industrial",
-                "descricao": "Ventilador de grande porte em usina, operação contínua, vibração moderada, RPM 600, alta eficiência energética"
-            }
-        ]
-    },
-    "🚗 Automotiva": {
-        "principal_problema": "Precisão",
-        "exemplos": [
-            {
-                "titulo": "Linha de Produção Automotiva",
-                "descricao": "Rolamento para linha de montagem automotiva, alta precisão, RPM variável, ciclo contínuo, baixa vibração"
-            },
-            {
-                "titulo": "Prensa Hidráulica",
-                "descricao": "Prensa hidráulica para estampagem, carga alta, precisão dimensional, RPM 500, alta repetibilidade"
-            },
-            {
-                "titulo": "Equipamento de Solda",
-                "descricao": "Equipamento de solda automática, precisão crítica, ambiente com fagulhas, RPM 3000, alta confiabilidade"
-            }
-        ]
-    }
-}
+EXAMPLES_BY_INDUSTRY = get_examples()
 
 # ============================================================================
 # CSS ESPECÍFICO DA PÁGINA
@@ -241,13 +180,6 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
-
-# ============================================================================
-# SIDEBAR - CONFIGURAÇÕES E CONTATO
-# ============================================================================
-
-render_sidebar()
-
 # ============================================================================
 # HEADER
 # ============================================================================
@@ -267,6 +199,7 @@ col1, col2 = st.columns([3, 1])
 # Inicializar
 if 'user_query_value' not in st.session_state:
     st.session_state.user_query_value = ""
+
 
 with col1:
     user_query = st.text_area(
@@ -299,49 +232,110 @@ with search_col1:
 with search_col3:
     st.caption("💡 Quanto mais detalhado sua descrição, melhores os resultados!")
 
+
 # ============================================================================
-# PROCESSAMENTO DE BUSCA
+# PROCESSAMENTO DE BUSCA (LINHA ~240)
 # ============================================================================
 
 if search_btn:
     if not user_query or user_query.strip() == "":
         st.warning("⚠️ Por favor, descreva seu problema técnico!")
     else:
-        with st.spinner("🔄 Analisando sua solicitação e gerando recomendações..."):
+        with st.spinner("🔄 Analisando..."):
             try:
+                # INÍCIO DO MONITORAMENTO
+                import time
+                start_time = time.time()
+                
                 # Gerar recomendações
-                recommendations = st.session_state.engine.recommend(user_query, top_k=int(top_k))
+                recommendations = st.session_state.engine.recommend(
+                    user_query, 
+                    top_k=int(top_k)
+                )
+                
+                # FIM DO MONITORAMENTO
+                processing_time = time.time() - start_time
+                
+                # MONITORAMENTO AUTOMÁTICO
+                monitoring_status = None
+                if monitor:
+                    try:
+                        monitoring_status = monitor.track_recommendation(
+                            query=user_query,
+                            recommendations=recommendations,
+                            processing_time=processing_time,
+                            user_id="anonymous"
+                        )
+                        
+                        logger.info(
+                            f"Monitoramento: {monitoring_status['num_results']} resultados, "
+                            f"{monitoring_status['processing_time_ms']:.1f}ms, "
+                            f"Score: {monitoring_status['top_score']:.1%}"
+                        )
+                        
+                    except Exception as e:
+                        logger.error(f"❌ Erro no monitoramento: {e}")
                 
                 if not recommendations:
+                    logger.warning(f"⚠️ Nenhuma recomendação encontrada para: {user_query[:50]}...")
                     st.warning("⚠️ Nenhuma recomendação encontrada para sua descrição.")
                 else:
-                    # Salvar no histórico - FORMATO UNIFICADO
-                    if 'history' not in st.session_state:
-                        st.session_state.history = []
-
-                    if 'search_history' not in st.session_state:
-                        st.session_state.search_history = []
-
-                    # Criar objeto com timestamp como datetime (para analytics)
+                    ensure_history_exists()
+                    
+                    # Criar item do histórico
                     history_item = {
                         'query': user_query,
                         'count': len(recommendations),
-                        'timestamp': datetime.now()  # datetime object, não string
+                        'timestamp': datetime.now()
                     }
-
-                    # Adicionar nos dois formatos para compatibilidade
+                    
+                    # Adicionar ao histórico
                     st.session_state.history.append(history_item)
-
-                    # Formato string para exibição no histórico de buscas
-                    st.session_state.search_history.append({
-                        'query': user_query[:60],
-                        'count': len(recommendations),
-                        'timestamp': datetime.now().strftime('%d/%m %H:%M')
-                    })
                     
-                    # Sucesso
-                    st.success(f"✅ {len(recommendations)} recomendações encontradas!")
+                    # LOGGING
+                    logger.info(
+                        f"✅ Recomendações geradas: {len(recommendations)} resultados "
+                        f"em {processing_time*1000:.2f}ms para query: {user_query[:50]}..."
+                    )
                     
+                    # VERIFICAR ALERTAS E DRIFT
+                    alert_messages = []
+                    
+                    if monitoring_status:
+                        if monitoring_status.get('drift_detected'):
+                            alert_messages.append({
+                                'type': 'warning',
+                                'message': f"⚠️ **Drift detectado!** Score atual: {monitoring_status['top_score']:.1%}"
+                            })
+                            alert_messages.append({
+                                'type': 'info',
+                                'message': "Considere retreinar o modelo com dados recentes"
+                            })
+                        
+                        if monitoring_status.get('active_alerts', 0) > 0:
+                            alert_messages.append({
+                                'type': 'error',
+                                'message': f"🚨 {monitoring_status['active_alerts']} alertas ativos - Verifique o dashboard de monitoramento"
+                            })
+                    
+                    # Mensagem de sucesso com info de performance
+                    success_msg = f"{len(recommendations)} recomendações encontradas"
+                    if monitoring_status:
+                        success_msg += f" em {monitoring_status['processing_time_ms']:.1f}ms!"
+                    else:
+                        success_msg += f" em {processing_time*1000:.1f}ms!"
+                    
+                    st.success(success_msg)
+                    
+                    # Mostrar alertas se houver
+                    for alert in alert_messages:
+                        if alert['type'] == 'warning':
+                            st.warning(alert['message'])
+                        elif alert['type'] == 'error':
+                            st.error(alert['message'])
+                        elif alert['type'] == 'info':
+                            st.info(alert['message'])
+                        
                     # ============================================================
                     # ABAS DE RESULTADOS
                     # ============================================================
@@ -641,19 +635,29 @@ if search_btn:
             
             except Exception as e:
                 st.error(f"❌ Erro ao processar: {str(e)}")
+                # LOGGING DE ERRO
+                logger.error(f"❌ Erro ao gerar recomendações: {e}", exc_info=True)
                 import traceback
                 st.code(traceback.format_exc())
 
 # ============================================================================
-# HISTÓRICO
+# HISTÓRICO RÁPIDO
 # ============================================================================
 
-if 'search_history' in st.session_state and st.session_state.search_history:
+if st.session_state.history:
     st.divider()
     
-    with st.expander("📜 Histórico de Buscas"):
-        for i, item in enumerate(reversed(st.session_state.search_history[-10:]), 1):
-            st.caption(f"{i}. {item['query']} • {item['count']} resultados • {item['timestamp']}")
+    with st.expander("📜 Histórico de Buscas Recentes"):
+        for i, item in enumerate(reversed(st.session_state.history[-10:]), 1):
+            timestamp = item.get('timestamp')
+            
+            if isinstance(timestamp, datetime):
+                time_str = timestamp.strftime('%d/%m %H:%M')
+            else:
+                time_str = str(timestamp)
+            
+            query = item.get('query', 'N/A')[:60]
+            st.caption(f"{i}. {query} • {item.get('count', 0)} resultados • {time_str}")
 
 # ============================================================================
 # SEÇÃO DE EXEMPLOS POR INDÚSTRIA

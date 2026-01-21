@@ -1,15 +1,16 @@
 """
-Sistema de Coleta de Métricas - DDF Tech 2025
+Sistema de Coleta de Métricas - Data Driven Bearings
 Monitora performance do modelo e saúde do sistema
 """
 import json
-import logging
 from datetime import datetime
 from typing import Dict, Any
 import os
 import pandas as pd
 
-logger = logging.getLogger(__name__)
+from utils.logger import setup_logger
+
+logger = setup_logger("metrics_collector", log_file="logs/metrics_collector.log")
 
 class MetricsCollector:
     """Coleta e armazena métricas de performance"""

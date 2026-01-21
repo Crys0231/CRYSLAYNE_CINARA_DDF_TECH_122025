@@ -1,0 +1,121 @@
+{
+    "🏭 Siderurgia": {
+        "principal_problema": "Vibração",
+        "exemplos": [
+            {
+                "titulo": "Vibração em Alta Velocidade",
+                "descricao": "Máquina com vibração excessiva em siderurgia, RPM 12000-15000, ambiente quente 80°C, carga média, preço máximo R$ 4000"
+            },
+            {
+                "titulo": "Laminador com Contaminação",
+                "descricao": "Laminador com contaminação de pó, vibração moderada, RPM 8000, necessita vedação, orçamento R$ 2500"
+            },
+            {
+                "titulo": "Forno com Alta Temperatura",
+                "descricao": "Rolamento para forno siderúrgico, temperatura acima de 100°C, carga pesada, RPM 5000, ambiente corrosivo"
+            }
+        ]
+    },
+    "🍔 Alimentos": {
+        "principal_problema": "Contaminação",
+        "exemplos": [
+            {
+                "titulo": "Câmara Fria com Umidade",
+                "descricao": "Equipamento em câmara fria com umidade alta, RPM 5000, necessita higiene, temperatura -5°C a 40°C"
+            },
+            {
+                "titulo": "Contaminação por Óleo",
+                "descricao": "Máquina em contato com óleos e graxas alimentares, vibração baixa, RPM 6000, preço até R$ 2000"
+            },
+            {
+                "titulo": "Processamento com Limpeza Frequente",
+                "descricao": "Equipamento de processamento alimentar que requer limpeza constante, resistente a produtos químicos de limpeza, RPM 4000"
+            }
+        ]
+    },
+    "⛏️ Mineração": {
+        "principal_problema": "Abrasividade",
+        "exemplos": [
+            {
+                "titulo": "Peneira Abrasiva",
+                "descricao": "Peneira em mineração com pó abrasivo, vibração alta, RPM 1800, amortecimento importante, orçamento R$ 3500"
+            },
+            {
+                "titulo": "Britador com Impactos",
+                "descricao": "Britador com altos impactos, carga dinâmica, RPM 3000, precisa durabilidade, máximo R$ 5000"
+            },
+            {
+                "titulo": "Transportador com Poeira",
+                "descricao": "Transportador de correia em ambiente de mineração, poeira intensa, vedação especial, RPM 1500, carga pesada"
+            }
+        ]
+    },
+    "📄 Papel e Celulose": {
+        "principal_problema": "Temperatura",
+        "exemplos": [
+            {
+                "titulo": "Secador de Papel",
+                "descricao": "Secador de papel a 100°C, vibração baixa, RPM 4000, resistência térmica essencial, até R$ 3000"
+            },
+            {
+                "titulo": "Máquina com Vapor",
+                "descricao": "Máquina de celulose com vapor, temperatura 60°C, umidade 90%, vibração moderada, RPM 3500"
+            },
+            {
+                "titulo": "Calandra com Alta Temperatura",
+                "descricao": "Rolamento para calandra de papel, temperatura 120°C, alta velocidade, RPM 8000, ambiente úmido"
+            }
+        ]
+    },
+    "🧪 Química": {
+        "principal_problema": "Corrosão",
+        "exemplos": [
+            {
+                "titulo": "Reator Químico",
+                "descricao": "Reator químico com vapores corrosivos, vibração baixa, RPM 2000, material inoxidável recomendado, até R$ 4500"
+            },
+            {
+                "titulo": "Bomba Centrífuga",
+                "descricao": "Bomba centrífuga em processo químico, 80°C, RPM 7000, necessita vedação especial, orçamento R$ 3000"
+            },
+            {
+                "titulo": "Misturador com Produtos Ácidos",
+                "descricao": "Misturador químico com produtos ácidos corrosivos, vedação perfeita necessária, RPM 2500, material resistente"
+            }
+        ]
+    },
+    "⚡ Energia": {
+        "principal_problema": "Confiabilidade",
+        "exemplos": [
+            {
+                "titulo": "Turbina Eólica",
+                "descricao": "Rolamento para turbina eólica, operação contínua, baixa manutenção, RPM variável, ambiente externo, alta confiabilidade"
+            },
+            {
+                "titulo": "Gerador com Alta Carga",
+                "descricao": "Gerador elétrico com alta carga, operação 24/7, temperatura média, RPM 1500, mínimo downtime necessário"
+            },
+            {
+                "titulo": "Ventilador Industrial",
+                "descricao": "Ventilador de grande porte em usina, operação contínua, vibração moderada, RPM 600, alta eficiência energética"
+            }
+        ]
+    },
+    "🚗 Automotiva": {
+        "principal_problema": "Precisão",
+        "exemplos": [
+            {
+                "titulo": "Linha de Produção Automotiva",
+                "descricao": "Rolamento para linha de montagem automotiva, alta precisão, RPM variável, ciclo contínuo, baixa vibração"
+            },
+            {
+                "titulo": "Prensa Hidráulica",
+                "descricao": "Prensa hidráulica para estampagem, carga alta, precisão dimensional, RPM 500, alta repetibilidade"
+            },
+            {
+                "titulo": "Equipamento de Solda",
+                "descricao": "Equipamento de solda automática, precisão crítica, ambiente com fagulhas, RPM 3000, alta confiabilidade"
+            }
+        ]
+    }
+}

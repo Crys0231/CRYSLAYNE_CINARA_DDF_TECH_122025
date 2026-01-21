@@ -91,8 +91,11 @@ Interface Streamlit (em desenvolvimento)
 | **API REST** | FastAPI, Uvicorn | 4 endpoints | Online |
 | **Testes** | Pytest | Automação | 9/9 passando |
 | **Segurança** | Dadosfera (AES-256) | Proteção PII | Ativo |
-| **Frontend (Fase 7)** | Streamlit | Interface web | Planejado |
-| **Monitoring (Fase 8)** | Prometheus, Grafana | Observabilidade | Planejado |
+| **Frontend** | Streamlit | Interface web | Completo |
+| **Monitoramento** | Prometheus, Grafana | 3 dashboards | Ativo |
+| **Logging** | Python logging | Estruturado |
+| **Data Drift** | Custom detector | Time-series analysis |
+| **Alertas** | Streamlit + Logging | Real-time |
 
 ---
 
@@ -242,6 +245,79 @@ tests/
 
 ---
 
+## 5. Camada de Apresentação - Data App (Fase 7)
+
+### 5.1 Arquitetura Streamlit
+
+#### Páginas Implementadas
+- home.py: Landing page com hero section
+- recommendations.py: Motor de recomendações com 5 abas
+- analytics.py: Dashboard de métricas
+- about.py: Informações do projeto
+- system_monitoring.py: Monitoramento em tempo real
+
+#### Componentes Compartilhados
+- layout.py: CSS global + componentes reutilizáveis
+- session.py: Gerenciamento de estado
+- history.py: Histórico de consultas
+- logger.py: Logging estruturado
+- plotting.py: Plotagem com tema escuro
+
+#### Fluxo de Dados na App
+1. Usuário acessa home.py
+2. Session state carrega engine + dados
+3. Usuário descreve problema em recommendations.py
+4. Recommendation engine processa query
+5. Resultados exibidos em 5 abas (Ranking, Gráfico, etc)
+6. Monitoramento registra métrica
+7. Analytics atualiza em tempo real
+8. Histórico persiste em session_state
+
+### 5.2 Stack Frontend
+| Componente | Tecnologia | Status |
+
+| Framework | Streamlit | Produção |
+| CSS | HTML/CSS custom | Produção |
+| Charts | Matplotlib + Seaborn | Produção |
+| Data Display | Pandas DataFrames | Produção |
+| Session Mgmt | st.session_state | Produção |
+
+---
+
+## 6. Camada de Observabilidade - Monitoramento (Fase 8)
+
+### 6.1 Sistema de Monitoramento Unificado
+
+#### Componentes
+- StreamlitMonitor: Classe principal
+- Tracking de performance
+- Detecção de data drift
+- Alertas automáticos
+
+#### Métricas Monitoradas
+1. Performance
+   - Latência de recomendações
+   - Throughput de requisições
+   - Taxa de sucesso
+
+2. Saúde do Sistema
+   - CPU usage
+   - Memory usage
+   - Disk usage
+
+3. Qualidade de Dados
+   - Score distribution
+   - Baseline drift detection
+   - Anomalias em scores
+
+4. Alertas
+   - CPU > 80%
+   - Memory > 85%
+   - Drift detectado
+   - Performance degradada
+
+---
+
 ## 5. Estrutura de Diretórios
 
 ```
@@ -301,7 +377,7 @@ projeto-ddf-tech-2025/
 
 ## 6. Ciclo de Vida do Projeto
 
-### Fases Concluídas (1-6)
+### Fases Concluídas
 
 | Fase | Duração | Entregas | Status |
 
@@ -311,11 +387,6 @@ projeto-ddf-tech-2025/
 | 4. Feature Engineering | 3 dias | 12 features | COMPLETED |
 | 5. Analytics (EDA) | 2 dias | 20+ visualizações | COMPLETED |
 | 6. ML Model | 2 dias | API REST operacional | COMPLETED |
-
-### Fases Futuras (7-8)
-
-| Fase | Timeline | Objetivo |
-
 | 7. Data App | 13-17/01/2026 | Interface Streamlit |
 | 8. Monitoring | 20-24/01/2026 | Dashboards + Alertas |
 

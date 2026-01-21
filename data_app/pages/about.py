@@ -3,82 +3,49 @@ Página Sobre - Redesenhada com Storytelling
 """
 
 import streamlit as st
-import sys
-import os
+from data_app.utils.session import setup_paths, get_engine, get_data
+from data_app.utils.history import ensure_history_exists
+from data_app.components.layout import (
+    get_global_css,
+    render_sidebar,
+    render_footer,
+    render_custom_divider
+)
 
-# IMPORTS
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# Setup paths uma única vez
+setup_paths()
 
-
-try:
-    from data_app.components.sidebar import render_sidebar
-    from src.recommendation_engine import RecommendationEngine
-    from data_app.utils.data_loader import load_products_data
-    from data_app.components.layout import (
-        get_global_css, 
-        render_header, 
-        render_footer,
-        render_custom_divider
-    )
-    from monitoring.alert_manager import AlertManager
-except ImportError as e:
-    st.warning(f"⚠️ Alguns módulos não foram importados: {e}")
+# Garantir histórico
+ensure_history_exists()
 
 # ============================================================================
-# CACHE E INICIALIZAÇÃO
+# CONFIGURAÇÃO
 # ============================================================================
 
-@st.cache_resource
-def init_engine():
-    """Inicializa a engine de recomendação"""
-    try:
-        products_df = load_products_data()
-        if products_df is None or products_df.empty:
-            st.error("❌ Erro: Dados de produtos não encontrados")
-            return None
-        engine = RecommendationEngine()
-        engine.fit(products_df, text_column="full_description")
-        return engine
-    except Exception as e:
-        st.error(f"❌ Erro ao inicializar engine: {e}")
-        return None
+st.set_page_config(
+    page_title="Sobre o Projeto",
+    page_icon="ℹ️",
+    layout="wide"
+)
 
-@st.cache_data
-def load_data():
-    """Carrega os dados de produtos"""
-    try:
-        return load_products_data()
-    except Exception as e:
-        st.error(f"❌ Erro ao carregar dados: {e}")
-        return None
+# Garantir engine está inicializado
+if 'engine' not in st.session_state:
+    with st.spinner("⚙️ Inicializando sistema..."):
+        engine = get_engine()
+        if engine is None:
+            st.error("❌ Não foi possível inicializar o sistema. Tente recarregar a página.")
+            st.stop()
+        st.session_state.engine = engine
 
-# ============================================================================
-# SESSION STATE - INICIALIZAÇÃO DA ENGINE
-# ============================================================================
-
-# Inicializar engine se não existir
-if 'engine' not in st.session_state or st.session_state.engine is None:
-    with st.spinner("⚙️ Inicializando sistema de recomendação..."):
-        st.session_state.engine = init_engine()
-
-# Inicializar dados se não existir
-if 'products_data' not in st.session_state or st.session_state.products_data is None:
-    st.session_state.products_data = load_data()
-
-# Validação crítica - parar execução se engine não foi inicializada
-if st.session_state.engine is None:
-    st.error("❌ Sistema não inicializado. Por favor, volte à página inicial.")
-    st.stop()
-
-# CONFIG
-st.set_page_config(page_title="Sobre o Projeto", layout="wide")
-
-# APLICAR ESTILO GLOBAL
-st.markdown(get_global_css(), unsafe_allow_html=True)
+# Garantir dados estão carregados
+if 'products_data' not in st.session_state:
+    st.session_state.products_data = get_data()
 
 # SIDEBAR
 render_sidebar()
+
+# APLICAR ESTILO GLOBAL PADRONIZADO
+st.markdown(get_global_css(), unsafe_allow_html=True)
 
 # ============================================================================
 # CSS ESPECÍFICO DA PÁGINA
@@ -274,7 +241,6 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
 
 # ============================================================================
 # PROBLEMA VS SOLUÇÃO

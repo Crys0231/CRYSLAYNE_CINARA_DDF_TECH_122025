@@ -1,5 +1,5 @@
 """
-Configurações de Monitoramento - DDF Tech 2025
+Configurações de Monitoramento - Data Driven Bearings
 Centraliza thresholds e configurações
 """
 from dataclasses import dataclass

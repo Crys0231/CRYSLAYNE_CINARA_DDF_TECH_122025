@@ -1,12 +1,9 @@
 """Formatador de recomendações com extração de preços"""
 import pandas as pd
-import numpy as np
 
 def format_recommendations(recommendations, products_df):
     """
-    Formata recomendações da engine para exibição
-    COM EXTRAÇÃO CORRETA DE PREÇOS
-    
+    Formata recomendações da engine para exibição    
     Args:
         recommendations (list): Lista de dicts com recomendações da engine
         products_df (DataFrame): DataFrame com dados dos produtos
@@ -34,11 +31,10 @@ def format_recommendations(recommendations, products_df):
                 print(f"⚠️ Produto {product_id} não encontrado no DataFrame")
                 continue
             
-            # Extrair dados corretamente
-            # ✅ CORRIGIDO: iloc é um indexador, precisa acessar a primeira linha com [0]
+            # Extrair dados
             product_data = product_row.iloc[0].to_dict()
             
-            # ✅ EXTRAÇÃO DE PREÇO - PRIORIDADE:
+            # EXTRAÇÃO DE PREÇO - PRIORIDADE:
             # 1. list_price (preço de venda)
             # 2. unit_cost (custo unitário como fallback)
             price = 0
@@ -54,7 +50,6 @@ def format_recommendations(recommendations, products_df):
                     price = float(price_val)
             
             # Montar recomendação formatada
-            # ✅ CORRIGIDO: DataFrame usa 'max_speed', não 'rpm_capacity'
             max_speed = product_data.get('max_speed', 0) or product_data.get('rpm_capacity', 0)
             rpm_capacity = int(max_speed) if max_speed else 0
             
@@ -62,10 +57,10 @@ def format_recommendations(recommendations, products_df):
                 'product_id': product_id,
                 'product_name': product_data.get('product_name', 'N/A'),
                 'bearing_type': product_data.get('bearing_type', 'N/A'),
-                'price': price,  # ✅ Preço validado
+                'price': price, 
                 'score': float(rec.get('score', 0)),
                 'technical_description': product_data.get('technical_description', ''),
-                'rpm_capacity': rpm_capacity,  # ✅ Mapeado de max_speed
+                'rpm_capacity': rpm_capacity,
                 'unit_cost': float(product_data.get('unit_cost', 0)) if product_data.get('unit_cost') else 0,
             })
         

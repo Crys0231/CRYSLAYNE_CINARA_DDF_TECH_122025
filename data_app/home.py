@@ -3,13 +3,40 @@
 Data Driven Bearings - Recomendador Inteligente de Rolamentos
 Página Principal - Dados Reais + Cores Consistentes
 """
-import streamlit as st
-import sys
-import os
-import logging
-from datetime import datetime
 
-# CONFIG
+# IMPORTS
+import streamlit as st
+
+from utils.session import setup_paths, get_engine, get_data
+from components.layout import get_global_css, render_footer, render_sidebar
+from utils.history import ensure_history_exists
+import streamlit as st
+from monitoring import StreamlitMonitor
+
+# ============================================================================
+# INICIALIZAR MONITOR 
+# ============================================================================
+
+if 'monitor' not in st.session_state:
+    st.session_state.monitor = StreamlitMonitor(
+        session_state=st.session_state
+    )
+    
+    # Configurar baseline do modelo
+    baseline_status = st.session_state.monitor.initialize_baseline()
+    
+    # Log inicial
+    print(f"Monitor inicializado")
+    print(f"Baseline: {baseline_status['samples']} amostras")
+    print(f"Média: {baseline_status['mean']:.3f}")
+
+# Alias para uso mais fácil
+monitor = st.session_state.monitor
+
+# ============================================================================
+# CONFIGURAÇÃO
+# ============================================================================
+
 st.set_page_config(
     page_title="Data Driven Bearings",
     page_icon="⚙️",
@@ -17,59 +44,30 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Configurar logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/app.log'),
-        logging.StreamHandler()
-    ]
-)
-# IMPORTS
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Setup paths uma única vez
+setup_paths()
 
-from src.recommendation_engine import RecommendationEngine
-from data_app.utils.data_loader import load_products_data
-from data_app.components.sidebar import render_sidebar
-from data_app.components.layout import get_global_css, render_footer, render_custom_divider
+# Garantir histórico
+ensure_history_exists()
 
-# CACHE
-@st.cache_resource
-def init_engine():
-    try:
-        products_df = load_products_data()
-        if products_df is None or products_df.empty:
-            return None
-        engine = RecommendationEngine()
-        engine.fit(products_df, text_column="full_description")
-        return engine
-    except Exception as e:
-        st.error(f"❌ Erro ao inicializar: {e}")
-        return None
-
-@st.cache_data
-def load_data():
-    try:
-        return load_products_data()
-    except Exception as e:
-        st.error(f"❌ Erro ao carregar dados: {e}")
-        return None
-
-# SESSION STATE
+# Garantir engine está inicializado
 if 'engine' not in st.session_state:
     with st.spinner("⚙️ Inicializando sistema..."):
-        st.session_state.engine = init_engine()
+        engine = get_engine()
+        if engine is None:
+            st.error("❌ Não foi possível inicializar o sistema. Tente recarregar a página.")
+            st.stop()
+        st.session_state.engine = engine
 
+# Garantir dados estão carregados
 if 'products_data' not in st.session_state:
-    st.session_state.products_data = load_data()
+    st.session_state.products_data = get_data()
+
+# SIDEBAR
+render_sidebar()
 
 # APLICAR ESTILO GLOBAL PADRONIZADO
 st.markdown(get_global_css(), unsafe_allow_html=True)
-
-# SIDEBAR - CONFIGURAÇÕES E CONTATO
-render_sidebar()
 
 # ============================================================================
 # HEADER - HERO SECTION
@@ -85,7 +83,6 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
 
 # ============================================================================
 # CARACTERÍSTICAS - FEATURE CARDS
