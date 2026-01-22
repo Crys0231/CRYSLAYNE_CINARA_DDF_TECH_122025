@@ -29,7 +29,7 @@ class RecommendationEngine:
         self.products_df = None
         self.tfidf_matrix = None
         self.is_fitted = False
-        print("✅ RecommendationEngine inicializado")
+        print("RecommendationEngine inicializado")
     
     def fit(self, products_df, text_column="full_description"):
         """
@@ -40,12 +40,12 @@ class RecommendationEngine:
             text_column: Coluna contendo descrições técnicas
         """
         if products_df is None or products_df.empty:
-            raise ValueError("❌ DataFrame vazio")
+            raise ValueError("DataFrame vazio")
         
         # Validar coluna
         if text_column not in products_df.columns:
-            print(f"⚠️ Coluna '{text_column}' não encontrada")
-            print(f"📋 Colunas disponíveis: {products_df.columns.tolist()}")
+            print(f"Coluna '{text_column}' não encontrada")
+            print(f"Colunas disponíveis: {products_df.columns.tolist()}")
             # Usar a primeira coluna de texto disponível
             text_column = "product_name"
         
@@ -67,10 +67,10 @@ class RecommendationEngine:
         try:
             self.tfidf_matrix = self.vectorizer.fit_transform(descriptions)
             self.is_fitted = True
-            print(f"✅ Engine treinado com {len(self.products_df)} produtos")
+            print(f"Engine treinado com {len(self.products_df)} produtos")
             return True
         except Exception as e:
-            print(f"❌ Erro ao treinar: {e}")
+            print(f"Erro ao treinar: {e}")
             raise
     
     def recommend(self, query, top_k=10):
@@ -85,10 +85,10 @@ class RecommendationEngine:
             list: Recomendações ordenadas por score
         """
         if not self.is_fitted:
-            raise ValueError("❌ Engine não foi treinado. Use .fit() primeiro")
+            raise ValueError("Engine não foi treinado. Use .fit() primeiro")
         
         if not query or not isinstance(query, str):
-            raise ValueError("❌ Query inválida")
+            raise ValueError("Query inválida")
         
         try:
             # Vetorizar query
@@ -117,9 +117,9 @@ class RecommendationEngine:
                         'load_capacity': float(row.get('load_capacity', 0)),
                     })
             
-            print(f"✅ {len(recommendations)} recomendações geradas (score min: {min([r['score'] for r in recommendations]):.4f})")
+            print(f"{len(recommendations)} recomendações geradas (score min: {min([r['score'] for r in recommendations]):.4f})")
             return recommendations
         
         except Exception as e:
-            print(f"❌ Erro ao gerar recomendações: {e}")
+            print(f"Erro ao gerar recomendações: {e}")
             raise
