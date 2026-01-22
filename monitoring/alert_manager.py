@@ -4,12 +4,13 @@ VERSÃO CORRIGIDA - Previne alertas duplicados
 """
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
+from data_app.utils.logger import setup_logger
 from enum import Enum
 import json
 import os
 
 try:
-    from utils.logger import setup_logger
+    
     logger = setup_logger("alert_manager", log_file="logs/alerts.log")
 except ImportError:
     import logging
