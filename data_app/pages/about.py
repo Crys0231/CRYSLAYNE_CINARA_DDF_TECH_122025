@@ -272,7 +272,7 @@ with col2:
     <div class="problem-solution-card solution-card">
         <h3 style="color: #10B981; margin-bottom: 20px;">✅ Nossa Solução</h3>
         <p style="color: #E2E8F0; line-height: 1.8;">
-            <strong>IA que entende linguagem natural</strong> e recomenda instantaneamente:
+            <strong>ML que entende linguagem natural</strong> e recomenda instantaneamente:
         </p>
         <ul style="color: #94A3B8; line-height: 1.8; margin-top: 16px;">
             <li>👾 Descreva o problema em português simples</li>

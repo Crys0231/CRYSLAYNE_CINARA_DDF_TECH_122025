@@ -13,12 +13,12 @@ from datetime import datetime, timedelta
 import psutil
 import time
 
-from data_app.utils.plotting import setup_dark_figure, apply_dark_style, DARK_COLORS
-from data_app.utils.history import ensure_history_exists
-from data_app.utils.session import setup_paths, get_engine, get_data
+from utils.plotting import setup_dark_figure, apply_dark_style, DARK_COLORS
+from utils.history import ensure_history_exists
+from utils.session import setup_paths, get_engine, get_data
 
 try:
-    from data_app.components.layout import (
+    from components.layout import (
         get_global_css, 
         render_sidebar,
         render_header, 
@@ -26,7 +26,7 @@ try:
         render_custom_divider,
         render_metric_card
     )
-    from data_app.utils.logger import setup_monitoring_logger
+    from utils.logger import setup_monitoring_logger
 except ImportError as e:
     st.warning(f"⚠️ Alguns módulos não foram importados: {e}")
 
@@ -165,7 +165,7 @@ if MONITORING_AVAILABLE and 'monitor' not in st.session_state:
         baseline_status = st.session_state.monitor.initialize_baseline()
         
         logger.info("✅ Monitor inicializado")
-        logger.info(f"📊 Baseline: {baseline_status['samples']} amostras")
+        logger.info(f"Baseline: {baseline_status['samples']} amostras")
         
     except Exception as e:
         logger.error(f"❌ Erro ao inicializar monitor: {e}", exc_info=True)
@@ -205,7 +205,7 @@ if monitor:
     
 else:
     # Fallback se monitor não disponível
-    st.warning("⚠️ Monitor não inicializado. Usando dados do histórico.")
+    st.warning("Monitor não inicializado. Usando dados do histórico.")
     
     from data_app.utils.history import get_history_stats
     history_stats = get_history_stats(st.session_state.history)
