@@ -15,14 +15,14 @@
 # ---------------------------------------------------------------------------
 pandas==2.2.3          # Data manipulation
 numpy==1.26.4          # Numerical computing
-pyarrow==14.0.1        # Apache Arrow para data I/O eficiente
+pyarrow>=16.0.0,<17.0.0      # Apache Arrow para data I/O eficiente
 openpyxl==3.1.2        # Excel file handling
 
 # ---------------------------------------------------------------------------
 # MACHINE LEARNING & NLP
 # ---------------------------------------------------------------------------
 scikit-learn>=1.6.0,<1.8.0   # ML algorithms
-scipy==1.13.0          # Scientific computing
+scipy>=1.14.1,<1.16.0       # Scientific computing
 nltk==3.9              # NLP toolkit
 
 # ---------------------------------------------------------------------------
