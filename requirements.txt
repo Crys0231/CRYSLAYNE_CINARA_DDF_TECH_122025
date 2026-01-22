@@ -1,68 +1,62 @@
-# INSTALL: pip install -r requirements.txt
 # ============================================================================
 # Data Driven Bearings - Production Requirements
-# Python: 3.10
+# Python: 3.11
 # Escopo: Pipeline + ML + API + Streamlit Data App
 # ============================================================================
 
 # ---------------------------------------------------------------------------
-# PYTHON VERSION
-# ---------------------------------------------------------------------------
-# Python 3.10+ required
-
-# ---------------------------------------------------------------------------
 # CORE DATA PROCESSING
 # ---------------------------------------------------------------------------
-pandas==2.2.3          # Data manipulation
-numpy==1.26.4          # Numerical computing
-pyarrow>=16.0.0,<17.0.0      # Apache Arrow para data I/O eficiente
-openpyxl==3.1.2        # Excel file handling
+pandas==2.2.3                     # Data manipulation (supports Python 3.11+)
+numpy==1.26.4                    # Numerical computing (supports Python 3.11)
+pyarrow>=16.1.0,<17.0.0          # Apache Arrow para data I/O eficiente
+openpyxl==3.1.2                  # Excel file handling
 
 # ---------------------------------------------------------------------------
 # MACHINE LEARNING & NLP
 # ---------------------------------------------------------------------------
-scikit-learn>=1.6.0,<1.8.0   # ML algorithms
-scipy>=1.14.1,<1.16.0       # Scientific computing
-nltk==3.9              # NLP toolkit
+scikit-learn>=1.6.0,<1.8.0       # ML algorithms (supports Python 3.11+)
+scipy>=1.14.1,<1.16.0            # Scientific computing (supports Python 3.11+)
+nltk==3.9                        # NLP toolkit
 
 # ---------------------------------------------------------------------------
 # VISUALIZATION
 # ---------------------------------------------------------------------------
-matplotlib==3.8.3      # Plotting library
-seaborn==0.13.2        # Statistical data visualization
-plotly==5.19.0         # Interactive visualizations
+matplotlib==3.8.3                # Plotting library
+seaborn==0.13.2                  # Statistical data visualization
+plotly==5.19.0                   # Interactive visualizations
 
 # ---------------------------------------------------------------------------
 # WEB APP & API
 # ---------------------------------------------------------------------------
-streamlit==1.39.0      # Web app framework
-fastapi==0.109.1       # API framework
-uvicorn==0.27.0        # ASGI server
+streamlit==1.39.0                # Web app framework (supports Python 3.11+)
+fastapi==0.109.1                 # API framework
+uvicorn==0.27.0                  # ASGI server
 
 # ---------------------------------------------------------------------------
-# SYSTEM MONITORING (ESSENCIAL - FALTAVA)
+# SYSTEM MONITORING
 # ---------------------------------------------------------------------------
-psutil==5.9.8          # System and process utilities
+psutil==5.9.8                    # System and process utilities
 
 # ---------------------------------------------------------------------------
 # CONFIG & VALIDATION
 # ---------------------------------------------------------------------------
-pydantic==2.6.3        # Data validation
-pydantic-settings==2.1.0  # Environment-based settings
-python-dotenv==1.0.1   # Load environment variables
+pydantic==2.6.3                  # Data validation
+pydantic-settings==2.1.0         # Environment-based settings
+python-dotenv==1.0.1             # Load environment variables
 
 # ---------------------------------------------------------------------------
 # UTILITIES
 # ---------------------------------------------------------------------------
-requests==2.32.0       # HTTP client
-tqdm==4.66.4           # Progress bars
-pyyaml==6.0.1          # YAML support
-loguru==0.7.2          # Enhanced logging
+requests==2.32.0                 # HTTP client
+tqdm==4.66.4                     # Progress bars
+pyyaml==6.0.1                    # YAML support
+loguru==0.7.2                    # Enhanced logging
 
 # ---------------------------------------------------------------------------
-# OPTIONAL/DEVELOPMENT (comentados)
+# OPTIONAL/DEVELOPMENT
 # ---------------------------------------------------------------------------
-# pytest==7.4.3         # Testing framework (para desenvolvimento)
+# pytest==7.4.3         # Testing framework
 # black==23.12.1        # Code formatter
 # flake8==6.1.0         # Linter
 # mypy==1.8.0           # Static type checker
