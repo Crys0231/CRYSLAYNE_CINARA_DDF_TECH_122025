@@ -47,7 +47,7 @@ def render_input_section():
         
         selected_template = st.selectbox("Selecione um template:", list(templates.keys()))
         
-        if st.button("✅ Usar Template", use_container_width=True):
+        if st.button("Usar Template", use_container_width=True):
             return templates[selected_template]
     
     with tab3:

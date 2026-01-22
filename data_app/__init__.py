@@ -9,3 +9,4 @@ __project__ = "Data Driven Bearings"
 
 from .components import *
 from .utils import *
+from .monitoring import *

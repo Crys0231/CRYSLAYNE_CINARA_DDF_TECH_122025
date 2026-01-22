@@ -21,7 +21,7 @@ def render_results(recommendations, products_data):
     with tab1:
         st.subheader("Top 10 Recomendações")
 
-        # ✅ CORRIGIDO: Sintaxe correta do DataFrame
+
         results_data = []
         for i, rec in enumerate(recommendations[:10]):
             results_data.append({
@@ -48,7 +48,7 @@ def render_results(recommendations, products_data):
                     st.metric("Score", f"{rec.get('score', 0):.1%}")
 
                 with col2:
-                    # ✅ Preço formatado corretamente
+                    # Preço formatado corretamente
                     st.metric("Preço", f"R$ {rec.get('price', 0):,.0f}")
 
                 with col3:
@@ -62,40 +62,28 @@ def render_results(recommendations, products_data):
 
     with tab2:
         st.subheader("Comparação de Produtos")
-
-        # ✅ CORRIGIDO: Gráfico reformatado para melhor visualização
         top_5 = recommendations[:5]
         
         if len(top_5) > 0:
-            # Dados para o gráfico
             products = [rec.get('product_name', 'N/A')[:25] for rec in top_5]
             scores = [rec.get('score', 0) for rec in top_5]
-            
-            # Cores baseadas no score
             colors = [
                 '#3FB950' if score > 0.4 
                 else '#FFA657' if score > 0.3 
                 else '#F85149' 
                 for score in scores
             ]
-
-            # ✅ Aumenta altura para evitar sobreposição de texto
             fig, ax = plt.subplots(figsize=(14, 8))
             
             # Gráfico horizontal para melhor legibilidade
             bars = ax.barh(products, scores, color=colors, edgecolor='black', linewidth=1.5, height=0.6)
-            
-            # Configurações do gráfico
             ax.set_xlabel('Score de Similaridade', fontweight='bold', fontsize=12)
             ax.set_title('Top 5 Melhores Recomendações', fontweight='bold', fontsize=16, pad=20)
             ax.set_xlim(0, 1)
             ax.grid(axis='x', alpha=0.3, linestyle='--')
             
-            # ✅ Adiciona percentual no final da barra
             for i, (score, product) in enumerate(zip(scores, products)):
                 ax.text(score + 0.03, i, f'{score:.1%}', va='center', fontweight='bold', fontsize=11)
-            
-            # Melhor espaçamento
             plt.tight_layout()
             st.pyplot(fig, use_container_width=True)
         else:

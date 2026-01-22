@@ -43,7 +43,7 @@ class DriftDetector:
         self.baseline_std = np.std(baseline_scores)
         
         logger.info(
-            f"✅ Baseline estabelecido: "
+            f"Baseline estabelecido: "
             f"mean={self.baseline_mean:.3f}, "
             f"std={self.baseline_std:.3f}, "
             f"samples={len(baseline_scores)}"
@@ -89,7 +89,7 @@ class DriftDetector:
                 }
             
             if self.baseline_mean is None:
-                logger.warning("⚠️ Baseline não definido. Chamando set_baseline() primeiro.")
+                logger.warning("Baseline não definido. Chamando set_baseline() primeiro.")
                 return {
                     "drift_detected": False,
                     "reason": "Baseline não definido",
@@ -135,7 +135,7 @@ class DriftDetector:
                 result["reason"] = self._get_drift_reason(z_score, variance_ratio)
             else:
                 logger.debug(
-                    f"✅ Sem drift detectado. "
+                    f"Sem drift detectado. "
                     f"Z-score={z_score:.2f}, "
                     f"Variance ratio={variance_ratio:.2f}"
                 )
@@ -143,7 +143,7 @@ class DriftDetector:
             return result
         
         except Exception as e:
-            logger.error(f"❌ Erro na detecção de drift: {e}", exc_info=True)
+            logger.error(f"Erro na detecção de drift: {e}", exc_info=True)
             return {
                 "drift_detected": False,
                 "reason": f"Erro: {str(e)}",
@@ -183,7 +183,7 @@ class DriftDetector:
             Score de qualidade normalizado entre 0 e 1
         """
         if len(scores) == 0:
-            logger.warning("⚠️ Array vazio fornecido para cálculo de qualidade")
+            logger.warning("Array vazio fornecido para cálculo de qualidade")
             return 0.0
         
         # Quanto maior o score médio, melhor a confiança
@@ -224,11 +224,11 @@ class DriftDetector:
     def reset(self) -> None:
         """Reseta o detector (mantém baseline)"""
         self.prediction_scores = []
-        logger.info("🔄 Detector resetado (baseline mantido)")
+        logger.info("Detector resetado (baseline mantido)")
     
     def reset_all(self) -> None:
         """Reseta tudo, incluindo baseline"""
         self.prediction_scores = []
         self.baseline_mean = None
         self.baseline_std = None
-        logger.info("🔄 Detector completamente resetado (baseline removido)")
+        logger.info("Detector completamente resetado (baseline removido)")

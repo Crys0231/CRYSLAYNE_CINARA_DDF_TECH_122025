@@ -4,7 +4,7 @@ VERSÃO CORRIGIDA - Previne alertas duplicados
 """
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
-from data_app.utils.logger import setup_logger
+from utils.logger import setup_logger
 from enum import Enum
 import json
 import os
