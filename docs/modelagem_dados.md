@@ -1,13 +1,14 @@
-# Modelagem de Dados - DDF Tech 2025 - Data Driven Bearings
+# DDF Tech 2025 - Data Driven Bearings
+## Estrutura de dados
 
-**Data:** 11/01/2026 
-**Status Geral:** **FASES 1-6 PRODUCTION READY**  
+**Data:** 22/01/2026 
+**Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
 
 ---
 
-## Sumário Executivo
+## Resumo
 
 A modelagem de dados segue o padrão **dimensional (Kimball)** com **Star Schema** implementado em 3 tabelas (1 fato + 2 dimensões), estruturando catálogo técnico de rolamentos (10.000), clientes (5.000) e 120 mil transações de vendas. A modelagem integra análise descritiva, recomendação baseada em problemas técnicos e suporte a machine learning com embeddings TF-IDF.
 
@@ -310,6 +311,57 @@ Top-K com scores (0.316 - 0.330)
 | **I5 - Cross-sell** | Vibração→Contaminação 31% | Bundling |
 | **I6 - Segmentação** | VIP 6.6%, Médio 70.7% | Estratégias customizadas |
 
+--- 
+
+## 8. Camada de Logging e Monitoramento
+
+### 8.1 Estrutura de Histórico de Consultas
+
+#### Tabela: query_history
+```json
+{
+  "query": "string (problema técnico)",
+  "timestamp": "datetime (quando consultado)",
+  "count": "int (número de resultados)",
+  "top_score": "float (score do melhor resultado)",
+  "processing_time_ms": "float (latência em ms)",
+  "user_id": "string (identificação do usuário)",
+  "drift_detected": "boolean (se drift foi detectado)",
+  "alerts": "array (alertas disparados)"
+}
+
+// Estrutura: Métricas do Monitoramento
+{
+  "timestamp": "datetime",
+  "metric_type": "string (cpu, memory, latency, drift)",
+  "value": "float",
+  "threshold": "float",
+  "alert_level": "string (info, warning, critical)",
+  "status": "string (healthy, degraded, critical)"
+}
+```
+
+### 6.2 Sistema de Alertas
+
+| Alerta            | Condição              | Severidade | Ação                     |
+
+| High CPU          | CPU > 80%             | WARNING    | Log + Dashboard          |
+| Critical Memory   | Memory > 85%          | CRITICAL   | Log + Notify + Dashboard |
+| Data Drift        | Score std > threshold | WARNING    | Log + Dashboard          |
+| Model Performance | Latência > 100ms      | WARNING    | Log + Dashboard          |
+| System Down       | API não responde      | CRITICAL   | Alert + Dashboard        |
+
+### 6.3 Versionamento de Modelos
+
+models/
+├── recommendation_engine_v1.pkl (2026-01-10, baseline)
+└── metadata.json
+  └── version: "1.0"
+  └── training_date: "2026-01-10"
+  └── n_features: 1000
+  └── n_products: 10000
+  └── vocab_size: 1000
+
 ---
 
 ## 8. Visões Analíticas Derivadas
@@ -454,6 +506,8 @@ Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o
 | `planejamento.md` | Roadmap e fases | Fase 4: Feature eng |
 | `analytics-fase5.md` | Análises e insights | EDA detalhada |
 | `avaliacao-fase6.md` | Modelo ML | TF-IDF performance |
+| `data_app-fase7.md` | Escopo da aplicação | Aplicação Streamit |
+| `monitoring-fase8.md` | Sistema de monitoramento | 5+ camadas de monitoramento |
 
 ---
 
@@ -474,12 +528,26 @@ A estrutura é **sólida, viável e extensível** para evolução futura.
 ## Informações do Projeto
 
 - **Projeto:** DDF Tech 2025 - Data Driven Bearings
-- **Escopo:** 8 Fases planejadas, 6 concluídas
-- **Status:** **FASES 1-6 PRODUCTION READY**
+- **Escopo:** 8 Fases completas
+- **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 11 de Janeiro de 2026
+- **Data de Atualização:** 22 de Janeiro de 2026
 - **Versão:** 2.0
 
 ---
 
-**Gerado com ChatGPT, Perplexity e análise estratégica de projeto**
+## IAs Utilizadas no Projeto
+
+- Perplexity PRO
+Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
+
+- Claude
+Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
+
+- ChatGPT
+Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
+
+- Manus.ai
+Utilizada na construção, validação e refinamento do código-fonte do projeto.
+
+**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**

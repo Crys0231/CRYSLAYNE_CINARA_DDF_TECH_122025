@@ -388,72 +388,148 @@ with col3:
     """, unsafe_allow_html=True)
 
 st.divider()
+
 # ============================================================================
 # TIMELINE DE FASES
 # ============================================================================
+import streamlit as st
+
+st.markdown("""
+    <style>
+    .roadmap-wrapper {
+        display: flex;
+        overflow-x: auto;
+        padding: 40px 20px;
+        background: rgba(26, 31, 58, 0.6);
+        border: 1px solid rgba(0, 102, 204, 0.2);
+        border-radius: 16px;
+        gap: 0;
+        scrollbar-width: thin;
+    }
+    
+    .roadmap-wrapper::-webkit-scrollbar {
+        height: 6px;
+    }
+    .roadmap-wrapper::-webkit-scrollbar-thumb {
+        background: rgba(0, 102, 204, 0.5);
+        border-radius: 10px;
+    }
+
+    .roadmap-step {
+        min-width: 250px;
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .roadmap-step::after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        width: 100%;
+        height: 2px;
+        background: rgba(0, 102, 204, 0.3);
+        z-index: 1;
+    }
+
+    .roadmap-step:last-child::after {
+        display: none;
+    }
+
+    .roadmap-dot {
+        width: 30px;
+        height: 30px;
+        background: #1A1F3A;
+        border: 3px solid #0066CC;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        margin-bottom: 15px;
+        box-shadow: 0 0 15px rgba(0, 102, 204, 0.6);
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .roadmap-content h4 {
+        color: #FFFFFF;
+        font-size: 16px;
+        margin-bottom: 8px !important;
+    }
+
+    .roadmap-content p {
+        color: #94A3B8;
+        font-size: 13px;
+        line-height: 1.4;
+        padding: 0 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 
 st.markdown("## 🚀 Roadmap do Projeto")
 
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.markdown("""
-    <div style="background: rgba(26, 31, 58, 0.6); border: 1px solid rgba(0, 102, 204, 0.2); border-radius: 16px; padding: 32px;">
-        <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <h4 style="color: #FFFFFF; margin-bottom: 8px;">Fase 1-2: Fundação de Dados</h4>
-            <p style="color: #94A3B8; font-size: 14px;">✅ 135K registros gerados + 99.7% qualidade validada</p>
-        </div>
-        <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <h4 style="color: #FFFFFF; margin-bottom: 8px;">Fase 3-4: Transformação & Features</h4>
-            <p style="color: #94A3B8; font-size: 14px;">✅ Star Schema implementado + 12 features técnicas</p>
-        </div>
-        <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <h4 style="color: #FFFFFF; margin-bottom: 8px;">Fase 5: Analytics (EDA)</h4>
-            <p style="color: #94A3B8; font-size: 14px;">✅ 20+ visualizações + 6 insights estratégicos</p>
-        </div>
-        <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <h4 style="color: #FFFFFF; margin-bottom: 8px;">Fase 6: ML Model + API</h4>
-            <p style="color: #94A3B8; font-size: 14px;">✅ TF-IDF treinado + API REST operacional</p>
-        </div>
-        <div class="timeline-item">
-            <div class="timeline-dot pending"></div>
-            <h4 style="color: #FFFFFF; margin-bottom: 8px;">Fase 7: Data App (Atual)</h4>
-            <p style="color: #94A3B8; font-size: 14px;">🔄 Interface Streamlit em desenvolvimento</p>
-        </div>
-        <div class="timeline-item">
-            <div class="timeline-dot pending"></div>
-            <h4 style="color: #FFFFFF; margin-bottom: 8px;">Fase 8: Monitoring (Próximo)</h4>
-            <p style="color: #94A3B8; font-size: 14px;">📅 Planejado para 20-24/01/2026</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%); border: 1px solid rgba(0, 102, 204, 0.2); border-radius: 16px; padding: 24px;">
-        <h4 style="color: #FFFFFF; margin-bottom: 20px;">📊 Status Geral</h4>
-        <div style="margin-bottom: 20px;">
-            <p style="color: #94A3B8; font-size: 12px; margin-bottom: 8px;">PROGRESSO</p>
-            <div style="background: rgba(0, 0, 0, 0.3); border-radius: 8px; height: 24px; position: relative;">
-                <div style="background: linear-gradient(90deg, #0066CC, #00B4D8); width: 75%; height: 100%; border-radius: 8px;"></div>
-                <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: 600; font-size: 12px;">75%</span>
+col_main, col_side = st.columns([2, 1])
+# 2. HTML do Roadmap Horizontal
+st.markdown("""
+    <div class="roadmap-wrapper">
+        <div class="roadmap-step">
+            <div class="roadmap-dot">1</div>
+            <div class="roadmap-content">
+                <h4>Fase 1-2: Fundação</h4>
+                <p>✅ 135K registros  
+99.7% qualidade</p>
             </div>
         </div>
-        <div style="margin-top: 24px;">
-            <p style="color: #10B981; font-size: 14px; margin-bottom: 8px;">✅ 6/8 Fases Concluídas</p>
-            <p style="color: #F59E0B; font-size: 14px; margin-bottom: 8px;">🔄 1/8 Em Desenvolvimento</p>
-            <p style="color: #94A3B8; font-size: 14px;">📅 1/8 Planejada</p>
+        <div class="roadmap-step">
+            <div class="roadmap-dot">2</div>
+            <div class="roadmap-content">
+                <h4>Fase 3-4: Features</h4>
+                <p>✅ Star Schema  
+12 features técnicas</p>
+            </div>
         </div>
-        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(0, 102, 204, 0.2);">
-            <p style="color: #00B4D8; font-weight: 600; font-size: 14px;">PRODUCTION READY</p>
-            <p style="color: #64748B; font-size: 12px; margin-top: 8px;">Fases 1-6 operacionais</p>
+        <div class="roadmap-step">
+            <div class="roadmap-dot">3</div>
+            <div class="roadmap-content">
+                <h4>Fase 5: Analytics</h4>
+                <p>✅ 20+ visualizações  
+6 insights</p>
+            </div>
+        </div>
+        <div class="roadmap-step">
+            <div class="roadmap-dot">4</div>
+            <div class="roadmap-content">
+                <h4>Fase 6: ML + API</h4>
+                <p>✅ TF-IDF treinado  
+API operacional</p>
+            </div>
+        </div>
+        <div class="roadmap-step">
+            <div class="roadmap-dot">5</div>
+            <div class="roadmap-content">
+                <h4>Fase 7: Data App</h4>
+                <p>✅ Publicado no  
+Streamlit Cloud</p>
+            </div>
+        </div>
+        <div class="roadmap-step">
+            <div class="roadmap-dot">6</div>
+            <div class="roadmap-content">
+                <h4>Fase 8: Monitoring</h4>
+                <p>✅ Sistema de  
+monitoramento ativo</p>
+            </div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
 
 st.divider()
 

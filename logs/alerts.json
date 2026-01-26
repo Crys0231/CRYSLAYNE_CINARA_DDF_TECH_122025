@@ -1,13 +1,26 @@
 [
   {
-    "id": "memory_usage_percent_critical_1769109957",
+    "id": "cpu_usage_percent_critical_1769111126",
+    "title": "\ud83d\udd34 CPU Elevada",
+    "message": "CPU em 96.2% (limite: 80%)",
+    "severity": "critical",
+    "metric": "cpu_usage_percent",
+    "current_value": 96.2,
+    "threshold": 80,
+    "timestamp": "2026-01-22T16:45:26.746597",
+    "resolved": false,
+    "resolved_at": null,
+    "notes": ""
+  },
+  {
+    "id": "memory_usage_percent_critical_1769111126",
     "title": "\ud83d\udd34 Mem\u00f3ria Elevada",
-    "message": "Mem\u00f3ria em 85.9% (limite: 85%)",
+    "message": "Mem\u00f3ria em 88.3% (limite: 85%)",
     "severity": "critical",
     "metric": "memory_usage_percent",
-    "current_value": 85.9,
+    "current_value": 88.3,
     "threshold": 85,
-    "timestamp": "2026-01-22T16:25:57.310650",
+    "timestamp": "2026-01-22T16:45:26.754577",
     "resolved": false,
     "resolved_at": null,
     "notes": ""

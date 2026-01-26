@@ -30,24 +30,24 @@ metadata = {}
 try:
     if MODEL_PATH.exists():
         engine = RecommendationEngine.load_model(str(MODEL_PATH))
-        logger.info(f"✅ Modelo carregado: {MODEL_PATH}")
+        logger.info(f"Modelo carregado: {MODEL_PATH}")
     else:
-        logger.error(f"❌ Arquivo não encontrado: {MODEL_PATH}")
+        logger.error(f"Arquivo não encontrado: {MODEL_PATH}")
 except Exception as e:
-    logger.error(f"❌ Erro ao carregar modelo: {e}")
+    logger.error(f"Erro ao carregar modelo: {e}")
     import traceback
     traceback.print_exc()
 
 # Carregar metadata
 try:
     if METADATA_PATH.exists():
-        with open(METADATA_PATH, 'r') as f:
+        with open(METADATA_PATH, 'r', encoding='utf-8') as f:
             metadata = json.load(f)
-        logger.info(f"✅ Metadata carregado: {METADATA_PATH}")
+        logger.info(f"Metadata carregado: {METADATA_PATH}")
     else:
-        logger.error(f"❌ Arquivo não encontrado: {METADATA_PATH}")
+        logger.error(f"Arquivo não encontrado: {METADATA_PATH}")
 except Exception as e:
-    logger.error(f"❌ Erro ao carregar metadata: {e}")
+    logger.error(f"Erro ao carregar metadata: {e}")
     import traceback
     traceback.print_exc()
 
@@ -135,8 +135,15 @@ def recommend():
             'recommendations': recommendations
         }), 200
     
+    except ValueError as e:
+        logger.error(f"Erro de validação: {e}")
+        return jsonify({
+            'error': f'Erro de validação: {str(e)}'
+        }), 400
     except Exception as e:
         logger.error(f"Erro ao processar recomendação: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'error': f'Erro ao processar: {str(e)}'
         }), 500
@@ -178,20 +185,38 @@ def batch_recommend():
             }), 400
         
         top_k = int(data.get('top_k', 5))
+        min_score = float(data.get('min_score', 0.0))
+        
+        # Validar ranges
+        if top_k < 1 or top_k > 20:
+            return jsonify({
+                'error': 'top_k deve estar entre 1 e 20'
+            }), 400
         
         # Processar batch
         results = {}
         for query in queries:
             if query.strip():
-                results[query] = engine.recommend(query, top_k=top_k)
+                results[query] = engine.recommend(
+                    query=query,
+                    top_k=top_k,
+                    min_score=min_score
+                )
         
         return jsonify({
             'num_queries': len(queries),
             'results': results
         }), 200
     
+    except ValueError as e:
+        logger.error(f"Erro de validação: {e}")
+        return jsonify({
+            'error': f'Erro de validação: {str(e)}'
+        }), 400
     except Exception as e:
         logger.error(f"Erro ao processar batch: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'error': f'Erro ao processar: {str(e)}'
         }), 500
@@ -204,6 +229,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def server_error(error):
+    logger.error(f"Erro 500: {error}")
     return jsonify({'error': 'Erro interno do servidor'}), 500
 
 
@@ -213,16 +239,16 @@ def server_error(error):
 
 if __name__ == '__main__':
     print("""
-╔════════════════════════════════════════════════════════════════╗
-║         API DE RECOMENDAÇÃO DE ROLAMENTOS - SERVIDOR           ║
-╚════════════════════════════════════════════════════════════════╝
+╔═══════════════════════════════════════════════════════════════╗
+║         API DE RECOMENDAÇÃO DE ROLAMENTOS - SERVIDOR         ║
+╚═══════════════════════════════════════════════════════════════╝
     """)
-    print("✅ Endpoints disponíveis:")
-    print("   • GET  /health                    - Health check")
-    print("   • GET  /api/v1/metadata           - Metadata do modelo")
-    print("   • POST /api/v1/recommend          - Recomendação única")
-    print("   • POST /api/v1/batch-recommend    - Recomendação em batch")
-    print("\n🚀 Iniciando servidor...")
+    print("Endpoints disponíveis:")
+    print("• GET  /health                    - Health check")
+    print("• GET  /api/v1/metadata           - Metadata do modelo")
+    print("• POST /api/v1/recommend          - Recomendação única")
+    print("• POST /api/v1/batch-recommend    - Recomendação em batch")
+    print("\nIniciando servidor...")
     print("   Acesse: http://localhost:5000\n")
     
     app.run(debug=False, host='0.0.0.0', port=5000)

@@ -1,13 +1,14 @@
 # DDF Tech 2025 - Data Driven Bearings
-## Avaliação  Layer EDA (Exploratory Data Analysis) - Fase 5
+## Layer EDA (Exploratory Data Analysis) - Fase 5
 
-**Data:** 11 de Janeiro de 2026  
-**Versão:** 1.0  
-**Status:** Concluído  
+**Data:** 22/01/2026 
+**Status Geral:** **COMPLETED**  
+**Responsável:** Cryslayne Cinara   
+**Versão:** 2.0
 
 ---
 
-## Resumo Executivo
+## Resumo
 
 A **Fase 5** implementou uma análise exploratória completa dos dados (EDA) gerando insights estratégicos de 120 mil transações, 5 mil clientes e 10 mil produtos. O notebook `05_eda_analysis.ipynb` produziu 20+ visualizações profissionais e conclusões acionáveis para o negócio.
 
@@ -309,7 +310,7 @@ Representante:     R$ 1.263.287e+09 (33.3%)
 **Ranking (por Rentabilidade - Número de Vendas):**
 
 | Posição | Produto | Rentabilidade |
-|---------|---------|---|
+
 | 1 | P07529 | R$ 1.12M |
 | 2 | P08741 | R$ 1.12M |
 | 3 | P07751 | R$ 1.13M |
@@ -386,7 +387,7 @@ Ticket Mediano:    R$ 24.707,56
 **Matriz de Problemas (Quantidade de Clientes Que Resolvem Cada Problema):**
 
 | Indústria | Contaminação | Desgaste | Superaquecimento | Vibração |
-|-----------|---|---|---|---|
+
 | Alimentos | 3.971 | 3.752 | 3.681 | 4.866 |
 | Automotiva | 3.711 | 3.572 | 3.596 | 3.769 |
 | Cimento | 3.642 | 3.437 | 3.588 | 3.620 |
@@ -416,7 +417,7 @@ Ticket Mediano:    R$ 24.707,56
 ### 4.3 Top 20 Clientes por Receita Total
 
 | Posição | Cliente | Receita |
-|---------|---------|---|
+
 | 1 | C01868 | R$ 1.538.311 |
 | 2 | C04088 | R$ 1.517.653 |
 | 3 | C00614 | R$ 1.506.761 |
@@ -496,7 +497,7 @@ Esferico                 523       501            525           494
 **Receita por Indústria:**
 
 | Indústria | Receita | % do Total |
-|-----------|---------|---|
+
 | Siderurgia | R$ 513.077 M | 13.5% |
 | Alimentos | R$ 490.626 M | 12.9% |
 | Mineração | R$ 474.292 M | 12.5% |
@@ -518,7 +519,7 @@ Esferico                 523       501            525           494
 **Análise Comparativa:**
 
 | Métrica | Distribuidor | Direct | Representante |
-|---------|---|---|---|
+
 | Receita Total | R$ 1.268B (33.4%) | R$ 1.266B (33.3%) | R$ 1.263B (33.3%) |
 | Quantidade de Vendas | 40.121 | 39.977 | 39.902 |
 | Taxa de Conclusão | 75.95% | 74.95% | 75.84% |
@@ -556,7 +557,7 @@ Desgaste:          29.243 vendas (29.5%)
 **Distribuição:**
 
 | Segmento | Quantidade | % | Receita Média | Budget Médio |
-|----------|---|---|---|---|
+
 | **Alto Valor** | 330 | 6.6% | R$ 1.172.224 | R$ 2.407.783 |
 | **Médio Valor** | 3.534 | 70.7% | R$ 802.517 | R$ 2.553.611 |
 | **Baixo Valor** | 1.136 | 22.7% | R$ 505.670 | R$ 2.484.710 |
@@ -576,7 +577,7 @@ Desgaste:          29.243 vendas (29.5%)
 ## Correções Aplicadas no Notebook
 
 | Linha | Erro Original | Correção |
-|------|---|---|
+
 | 1.4 | `bp['boxes'].set_facecolor()` retornava AttributeError | Iterar: `for box in bp['boxes']: box.set_facecolor(...)` |
 | 2.7 | `plt.colorbar()` genérico sem referência | Usar `plt.colorbar(scatter)` onde scatter = `plt.scatter()` |
 | 3.3 | Array retornado sem extração de valor único | `name = arr[0] if len(arr) > 0 else str(product_id)` |
@@ -597,7 +598,7 @@ Desgaste:          29.243 vendas (29.5%)
 ### Completude de Dados
 
 | Tabela | Total de Registros | Nulos Críticos | Completude |
-|--------|---|---|---|
+
 | **products** | 10.000 | 0 | 100% |
 | **customers** | 5.000 | 0 | 100% |
 | **sales** | 120.000 | 0 | 100% |
@@ -607,7 +608,7 @@ Desgaste:          29.243 vendas (29.5%)
 ## Sumário Final
 
 | Métrica | Valor | Status |
-|--------|---|---|
+
 | **Receita Total** | R$ 3.797.368.297 | Estável |
 | **Clientes Ativos** | 5.000 | Diversificados |
 | **Produtos em Catálogo** | 10.000 | Equilibrado |
@@ -631,12 +632,26 @@ Desgaste:          29.243 vendas (29.5%)
 ## Informações do Projeto
 
 - **Projeto:** DDF Tech 2025 - Data Driven Bearings
-- **Fase:** 5 - Analytics Layer (EDA)
+- **Escopo:** 8 Fases completas
+- **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Status:** CONCLUÍDO
+- **Data de Atualização:** 22 de Janeiro de 2026
+- **Versão:** 2.0
 
-**Última Atualização:** 11 de Janeiro de 2026  
-**Versão:** 1.0
-**Data de Conclusão:** 2026-01-11
+---
 
-Gerado com Perplexity
+## IAs Utilizadas no Projeto
+
+- Perplexity PRO
+Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
+
+- Claude
+Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
+
+- ChatGPT
+Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
+
+- Manus.ai
+Utilizada na construção, validação e refinamento do código-fonte do projeto.
+
+**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**

@@ -53,12 +53,12 @@ except ImportError as e:
 # LOGGING
 logger = setup_monitoring_logger()
 logger.info("=" * 60)
-logger.info("📊 Iniciando página de monitoramento")
+logger.info("🎯 Iniciando página de monitoramento")
 logger.info("=" * 60)
 
 st.set_page_config(
     page_title="Monitoramento do Sistema",
-    page_icon="📊",
+    page_icon="🎯",
     layout="wide"
 )
 
@@ -250,7 +250,7 @@ total_alerts = total_alerts + critical_alerts + warning_alerts
 render_header(
     "Monitoramento do Sistema",
     "Visão unificada de performance, saúde e alertas em tempo real",
-    "📊"
+    "🎯"
 )
 
 # ============================================================================

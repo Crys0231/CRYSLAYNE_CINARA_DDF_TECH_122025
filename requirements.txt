@@ -52,6 +52,13 @@ requests==2.32.0                 # HTTP client
 tqdm==4.66.4                     # Progress bars
 pyyaml==6.0.1                    # YAML support
 loguru==0.7.2                    # Enhanced logging
+SQLAlchemy==2.0.30               # Conexão Postgres
+psycopg2-binary==2.9.9
+
+# ---------------------------------------------------------------------------
+# DATA SERIALIZATION & TABLE FORMATTING
+# ---------------------------------------------------------------------------
+tabulate==0.9.0                  # Table formatting (para .to_markdown() em pandas)
 
 # ---------------------------------------------------------------------------
 # OPTIONAL/DEVELOPMENT

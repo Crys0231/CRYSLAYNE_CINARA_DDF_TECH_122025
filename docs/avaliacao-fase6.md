@@ -1,13 +1,14 @@
 # DDF Tech 2025 - Data Driven Bearings
 ## Avaliação do Modelo de Similaridade - Fase 6
 
-**Data:** 11 de Janeiro de 2026  
-**Versão:** 1.0  
-**Status:** Production Ready  
+**Data:** 22/01/2026 
+**Status Geral:** **COMPLETED**  
+**Responsável:** Cryslayne Cinara   
+**Versão:** 2.0
 
 ---
 
-## Resumo Executivo
+## Resumo
 
 A **Fase 6** implementou um motor de recomendação baseado em **similaridade TF-IDF** que recomenda rolamentos industriais conforme a descrição de problemas técnicos do cliente.
 
@@ -367,12 +368,26 @@ tests/test_api.py (validações)
 ## Informações do Projeto
 
 - **Projeto:** DDF Tech 2025 - Data Driven Bearings
-- **Fase:** 6 - Modelo de Similaridade
-- **Engenheira:** Cryslayne Cinara
-- **Status:** PRODUCTION READY
+- **Escopo:** 8 Fases completas
+- **Status:** **READY**
+- **Responsável:** Cryslayne Cinara
+- **Data de Atualização:** 22 de Janeiro de 2026
+- **Versão:** 2.0
 
-**Última Atualização:** 11 de Janeiro de 2026  
-**Versão:** 1.0
-**Data de Conclusão:** 2026-01-11
+---
 
-Gerado com Perplexity 
+## IAs Utilizadas no Projeto
+
+- Perplexity PRO
+Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
+
+- Claude
+Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
+
+- ChatGPT
+Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
+
+- Manus.ai
+Utilizada na construção, validação e refinamento do código-fonte do projeto.
+
+**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**

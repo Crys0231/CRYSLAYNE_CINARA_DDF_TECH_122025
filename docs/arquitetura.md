@@ -1,14 +1,15 @@
-# Arquitetura do Projeto DDF Tech 2025
-## Data Driven Bearings - Especificação Técnica
+# DDF Tech 2025 - Data Driven Bearings
+## Arquitetura do Projeto
 
-**Data:** 11/01/2026 
-**Status Geral:** **FASES 1-6 PRODUCTION READY**  
+
+**Data:** 22/01/2026 
+**Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
 
 ---
 
-## Sumário Executivo
+## Resumo
 
 A arquitetura técnica do **Data Driven Bearings** segue o padrão **medallion** (Raw → Trusted → Refined) com integração de data quality, feature engineering e machine learning. O projeto utiliza **135 mil registros**, pipeline **100% automatizado**, modelo TF-IDF com **latência <3ms** e API REST operacional. Toda a solução segue boas práticas de engenharia de dados com versionamento, testes e monitoramento.
 
@@ -50,7 +51,7 @@ CAMADA 4: PRODUCTION LAYER
 ├─ Modelo: TF-IDF treinado (1.000 features, 15.9 MB)
 ├─ API: 4 endpoints REST (FastAPI)
 └─ Testes: 9/9 automatizados (100%)
-Status: PRODUCTION READY (<3ms latência)
+Status: READY (<3ms latência)
 ```
 
 ### 1.2 Fluxo de Dados
@@ -72,7 +73,9 @@ Modelo TF-IDF (15.9 MB, 1.000 features)
     ↓ API REST
 Recomendações (<3ms)
     ↓ Fase 7: Data App
-Interface Streamlit (em desenvolvimento)
+Interface Streamlit (Consumo)
+    ↓ Fase 8: Monitoramento
+Data Drift + Alertas de sistema
 ```
 
 ---
@@ -239,8 +242,9 @@ TfidfVectorizer(
 ```
 tests/
 ├── test_api.py              # 9 testes de API (todos passando)
-├── test_recommendation_engine.py  # Testes de engine
-└── test_integration.py      # Testes de integração
+├── test_data_quality.py      # teste de qualidade dos dados
+├── test_monitoring.py      # teste do sistema de monitoramento
+└── test_recommendation_engine.py  # testes de engine ML
 ```
 
 ---
@@ -318,7 +322,7 @@ tests/
 
 ---
 
-## 5. Estrutura de Diretórios
+## 7. Estrutura de Diretórios
 
 ```
 projeto-ddf-tech-2025/
@@ -336,13 +340,43 @@ projeto-ddf-tech-2025/
 │       ├── dim_customers.parquet
 │       └── fact_sales.parquet
 │
+├── data_app/
+│   ├── components/
+│   │   ├── header.py
+│   │   ├── input_section.py
+│   │   ├── layout.py
+│   │   └── results_display.py
+│   ├──config/
+│   │   └── examples.json
+│   ├──monitoring/
+│   │   ├── alert_manager.py
+│   │   ├── config.py
+│   │   ├── metrics_collector.py
+│   │   └── model_drift_detector.py
+│   ├──pages/
+│   │   ├── home.py
+│   │   ├── about.py
+│   │   ├── analytics.py
+│   │   ├── recommendations.py
+│   │   └── system_monitoring.py
+│   └──utils/
+│       ├── data_loader.py
+│       ├── examples.py
+│       ├── formatters.py
+│       ├── history.py
+│       ├── logger.py
+│       ├── plotting.py
+│       ├── recommendations.py
+│       └── session.py
+│
 ├── notebooks/
 │   ├── 01_data_generation.ipynb
 │   ├── 02_data_quality.ipynb
 │   ├── 03_data_transformation.ipynb
 │   ├── 04_llm_feature_engineering.ipynb
 │   ├── 05_eda_analysis.ipynb
-│   └── 06_similarity_model.ipynb
+│   ├── 06_similarity_model.ipynb
+│   └── 07_postgres.ipynb
 │
 ├── src/
 │   ├── recommendation_engine.py
@@ -363,7 +397,8 @@ projeto-ddf-tech-2025/
 │   ├── planejamento.md
 │   ├── analytics-fase5.md
 │   ├── avaliacao-fase6.md
-│   └── monitoring-guia.md
+│   ├── data_app-fase7.md
+│   └── monitoring-fase8.md
 │
 ├── outputs/
 │   └── [20+ visualizações PNG]
@@ -375,7 +410,7 @@ projeto-ddf-tech-2025/
 
 ---
 
-## 6. Ciclo de Vida do Projeto
+## 8. Ciclo de Vida do Projeto
 
 ### Fases Concluídas
 
@@ -387,13 +422,13 @@ projeto-ddf-tech-2025/
 | 4. Feature Engineering | 3 dias | 12 features | COMPLETED |
 | 5. Analytics (EDA) | 2 dias | 20+ visualizações | COMPLETED |
 | 6. ML Model | 2 dias | API REST operacional | COMPLETED |
-| 7. Data App | 13-17/01/2026 | Interface Streamlit |
-| 8. Monitoring | 20-24/01/2026 | Dashboards + Alertas |
+| 7. Data App | 13-17/01/2026 | Interface Streamlit | COMPLETED |
+| 8. Monitoring | 20-24/01/2026 | Dashboards + Alertas | COMPLETED |
 
 ---
-## 7. Considerações de Produção
+## 9. Considerações de Produção
 
-### 7.1 Checklist de Produção 
+### 9.1 Checklist de Produção 
 
 **Código:**
 - Python 3.8+ com best practices
@@ -430,7 +465,7 @@ projeto-ddf-tech-2025/
 - APIs documentadas
 - Troubleshooting guide
 
-### 7.2 Escalabilidade
+### 9.2 Escalabilidade
 
 A arquitetura foi validada para escalar até **100.000+ produtos** sem redesign:
 
@@ -450,7 +485,7 @@ A arquitetura foi validada para escalar até **100.000+ produtos** sem redesign:
 - Load balancing
 - Re-treinamento incremental
 
-### 7.3 Segurança
+### 9.3 Segurança
 
 - AES-256 encryption (Dadosfera)
 - Validação de input
@@ -460,7 +495,7 @@ A arquitetura foi validada para escalar até **100.000+ produtos** sem redesign:
 
 ---
 
-## 8. Dependências Principais
+## 10. Dependências Principais
 
 ```
 # requirements.txt
@@ -484,37 +519,34 @@ prometheus-client==0.18.0 (Fase 8)
 
 ---
 
-## 9. Próximas Fases
+## 11. Conclusão
 
-### Fase 7: Data App Streamlit 
-- Interface responsiva em linguagem natural
-- Integração com API de recomendação
-- Análise de custo-benefício
-- Deploy em staging
-
-### Fase 8: Monitoring & MLOps 
-- Dashboards Grafana
-- Data Drift detection
-- Model versioning
-- Alertas automáticos
-
----
-
-## 10. Conclusão
-
-A arquitetura técnica do **DDF Tech 2025** implementa as melhores práticas de **data engineering** com qualidade, escalabilidade e segurança. Com **6 fases concluídas com sucesso** e **100% de testes passando**, a plataforma está pronta para produção e evolução.
+A arquitetura técnica do **Data Driven Bearings** implementa as melhores práticas de **data engineering** com qualidade, escalabilidade e segurança. Com **8 fases concluídas com sucesso** e **100% de testes passando**, a plataforma está pronta para deploy.
 
 --- 
 
 ## Informações do Projeto
 
 - **Projeto:** DDF Tech 2025 - Data Driven Bearings
-- **Escopo:** 8 Fases planejadas, 6 concluídas
-- **Status:** **FASES 1-6 PRODUCTION READY**
+- **Escopo:** 8 Fases completas
+- **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 11 de Janeiro de 2026
+- **Data de Atualização:** 22 de Janeiro de 2026
 - **Versão:** 2.0
 
 ---
+## IAs Utilizadas no Projeto
 
-**Gerado com ChatGPT, Perplexity e análise estratégica de projeto**
+- Perplexity PRO
+Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
+
+- Claude
+Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
+
+- ChatGPT
+Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
+
+- Manus.ai
+Utilizada na construção, validação e refinamento do código-fonte do projeto.
+
+**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**

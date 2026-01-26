@@ -5,9 +5,7 @@ import sys
 import os
 import streamlit as st
 
-
-# Garantir que o path está correto
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath('../src'))
 
 print("Testando Sistema de Monitoramento\n")
 
