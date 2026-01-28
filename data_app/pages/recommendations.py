@@ -471,7 +471,7 @@ if search_btn:
                             
                             # Normalizar valores para comparação (0-100)
                             max_price = max(prices) if prices else 1
-                            max_rpm = max(rpm_values) if rpm_values else 1
+                            max_rpm = max(rpm_values) if rpm_values and max(rpm_values) > 0 else 1
                             
                             normalized_prices = [(p/max_price)*100 for p in prices]
                             normalized_rpm = [(r/max_rpm)*100 for r in rpm_values]
