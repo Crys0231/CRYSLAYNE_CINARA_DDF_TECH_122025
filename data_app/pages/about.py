@@ -8,8 +8,7 @@ from data_app.utils.history import ensure_history_exists
 from data_app.components.layout import (
     get_global_css,
     render_sidebar,
-    render_footer,
-    render_custom_divider
+    render_footer
 )
 
 # Setup paths uma única vez

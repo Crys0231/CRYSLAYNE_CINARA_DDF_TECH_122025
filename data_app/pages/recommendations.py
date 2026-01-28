@@ -695,9 +695,8 @@ with st.expander("💡 Exemplos por Indústria", expanded=False):
                     button_key = f"use_example_{hash(industry)}_{hash(exemplo['titulo'])}"
                     if st.button("📋 Usar", key=button_key, use_container_width=True):
                         st.session_state.user_query_value = exemplo['descricao']
-                        st.rerun()
+                        st.experimental_rerun()
 
-                        
         st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
     
     # Mensagem final
