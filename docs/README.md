@@ -59,7 +59,7 @@ pip install -r requirements.txt
 ### 3️. Execute a Data App 
 
 ### O App foi postado no Streamlit Community 
-URL: datadrivenbearings.streamlit.app
+URL: [datadrivenbearings.streamlit.app](https://datadrivenbearings.streamlit.app/)
 
 ### OU execute a aplicação 
 
@@ -233,7 +233,7 @@ Body: {queries: ["vibração", "desgaste"], top_k: 5}
 | **Home** | Landing page | Hero section, CTA, stack tech |
 | **Recommendations** | Motor de recomendações | Input, 5 abas de resultados |
 | **Analytics** | Dashboard de uso | KPIs, gráficos dinâmicos |
-| **ℹAbout** | Sobre o projeto | Storytelling, arquitetura |
+| **About** | Sobre o projeto | Storytelling, arquitetura |
 | **Monitoring** | Saúde do sistema | Health score, alertas, drift |
 
 **Abas de Resultados (Recommendations):**
@@ -463,10 +463,10 @@ for product in results:
 
 ```bash
 # Inicie a aplicação
-streamlit run data_app/pages/home.py
+streamlit run data_app/home.py
 
 # Acesse em navegador
-# http://localhost:8501
+URL: https://datadrivenbearings.streamlit.app/
 ```
 
 **Fluxo de Uso:**
@@ -553,13 +553,13 @@ results = engine.batch_recommend(queries, top_k=5)
 
 | Arquivo | Conteúdo |
 | ------- | -------- |
-| **[arquitetura.md](docs/arquitetura.md)** | Padrão Medallion, Tech Stack, Componentes |
-| **[modelagem_dados.md](docs/modelagem_dados.md)** | Star Schema, Dimensões, Fatos |
-| **[planejamento.md](docs/planejamento.md)** | Roadmap, Cronograma, Status |
-| **[analytics-fase5.md](docs/analytics-fase5.md)** | EDA, 20+ visualizações, Insights |
-| **[avaliacao-fase6.md](docs/avaliacao-fase6.md)** | ML Model, Performance, Testes |
-| **[data_app-fase7.md](docs/data_app-fase7.md)** | Streamlit, Componentes, UX |
-| **[monitoring-fase8.md](docs/monitoring-fase8.md)** | Observabilidade, Alertas, MLOps |
+| **[arquitetura.md](arquitetura.md)** | Padrão Medallion, Tech Stack, Componentes |
+| **[modelagem_dados.md](modelagem_dados.md)** | Star Schema, Dimensões, Fatos |
+| **[planejamento.md](planejamento.md)** | Roadmap, Cronograma, Status |
+| **[analytics-fase5.md](analytics-fase5.md)** | EDA, 20+ visualizações, Insights |
+| **[avaliacao-fase6.md](avaliacao-fase6.md)** | ML Model, Performance, Testes |
+| **[data_app-fase7.md](data_app-fase7.md)** | Streamlit, Componentes, UX |
+| **[monitoring-fase8.md](monitoring-fase8.md)** | Observabilidade, Alertas, MLOps |
 
 ---
 

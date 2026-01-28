@@ -4,8 +4,6 @@ Componentes reutilizáveis da aplicação Streamlit
 from typing import Optional
 
 from .header import render_header
-from .input_section import render_input_section
-from .results_display import render_results
 from .layout import (
     get_global_css,
     render_sidebar,
