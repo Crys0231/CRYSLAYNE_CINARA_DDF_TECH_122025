@@ -2,7 +2,7 @@
 ## Arquitetura do Projeto
 
 
-**Data:** 22/01/2026 
+**Data:** 28/01/2026 
 **Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
@@ -83,7 +83,7 @@ Data Drift + Alertas de sistema
 ## 2. Technology Stack
 
 | Camada | Tecnologia | Propósito | Status |
-
+| ------ | ---------- | --------- | ------ |
 | **Orquestração** | Jupyter Notebooks | Execução e prototipagem | 6 notebooks |
 | **Storage** | Parquet (Fastparquet) | Formato otimizado | 9 arquivos |
 | **Qualidade** | Soda Core | Validação automática | 10+ regras |
@@ -134,7 +134,7 @@ Data Drift + Alertas de sistema
 **Soda Core - 10+ Regras Validadas:**
 
 | Regra | Tipo | Conformidade |
-
+| ----- | ---- | ------------ |
 | Completude (nulos críticos) | Validação | 100% |
 | Chaves Primárias (unicidade) | Integridade | 100% |
 | Tipos de Dados | Tipagem | 100% |
@@ -149,7 +149,7 @@ Data Drift + Alertas de sistema
 **Modelo TF-IDF:**
 
 | Aspecto | Especificação |
-
+| ------- | ------------- |
 | Algoritmo | TF-IDF Vectorizer + Cosine Similarity |
 | Features | 1.000 (sparse matrix) |
 | Produtos Indexados | 10.000 |
@@ -194,7 +194,7 @@ TfidfVectorizer(
 **Performance:**
 
 | Métrica | Valor | SLA | Status |
-
+| ------- | ----- | --- | ------ |
 | Latência P50 | <3ms | <100ms | EXCEEDS |
 | Latência P95 | <5ms | <100ms | EXCEEDS |
 | Throughput | 1.000 req/s | ≥500 req/s | EXCEEDS |
@@ -278,8 +278,9 @@ tests/
 8. Histórico persiste em session_state
 
 ### 5.2 Stack Frontend
-| Componente | Tecnologia | Status |
 
+| Componente | Tecnologia | Status |
+| ---------- | ---------- | ------ |
 | Framework | Streamlit | Produção |
 | CSS | HTML/CSS custom | Produção |
 | Charts | Matplotlib + Seaborn | Produção |
@@ -325,87 +326,88 @@ tests/
 ## 7. Estrutura de Diretórios
 
 ```
-projeto-ddf-tech-2025/
-├── data/
-│   ├── raw/
-│   │   ├── products_raw.json
-│   │   ├── customers_raw.csv
-│   │   └── sales_raw.csv
-│   ├── trusted/
+CRYSLAYNE_CINARA_DDF_TECH_122025/
+│
+├── 📂 data/
+│   ├── raw/                             # Dados brutos (Raw Zone)
+│   │   ├── products_raw.json            # 10.000 rolamentos
+│   │   ├── customers_raw.csv            # 5.000 clientes
+│   │   └── sales_raw.csv                # 120.000 transações
+│   ├── trusted/                         # Dados validados (Trusted Zone)
 │   │   ├── products_trusted.parquet
 │   │   ├── customers_trusted.parquet
 │   │   └── sales_trusted.parquet
-│   └── refined/
-│       ├── dim_products.parquet
-│       ├── dim_customers.parquet
-│       └── fact_sales.parquet
+│   └── refined/                         # Dados modelados (Refined Zone)
+│       ├── dim_products.parquet         # Dimensão produtos
+│       ├── dim_customers.parquet        # Dimensão clientes
+│       └── fact_sales.parquet           # Fato transações
 │
-├── data_app/
-│   ├── components/
-│   │   ├── header.py
-│   │   ├── input_section.py
-│   │   ├── layout.py
-│   │   └── results_display.py
-│   ├──config/
-│   │   └── examples.json
+├── 📂 notebooks/                       # Jupyter Notebooks (Fase 1-6)
+│   ├── 01_data_generation.ipynb         # Geração de dados sintéticos
+│   ├── 02_data_quality.ipynb            # Verificação de qualidade com Soda Core
+│   ├── 03_data_transformation.ipynb     # Camada Trusted - dados tratados e validados
+│   ├── 04_feature_engineering.ipynb     # Camada Refined - modelagem para análise eda e features para ML
+│   ├── 05_eda_analysis.ipynb            # 20+ visualizações de negócio 
+│   ├── 06_similarity_model.ipynb        # Treinamento do modelo de similaridade
+│   └── 07_postgres.ipynb                # Dev only: Subir tabelas para Postgres
+│
+├── 📂 src/                             # Código-fonte produção
+│   ├── recommendation_engine.py         # Motor TF-IDF
+│   └── api.py                           # API REST (FastAPI)
+│
+├── 📂 data_app/                        # Aplicação Streamlit (Fase 7)
+│   ├── pages/
+│   │   ├── recommendations.py           # Motor de recomendações
+│   │   ├── analytics.py                 # Dashboard
+│   │   ├── about.py                     # Sobre o projeto
+│   │   └── system_monitoring.py         # Página de monitoramento
 │   ├──monitoring/
-│   │   ├── alert_manager.py
-│   │   ├── config.py
-│   │   ├── metrics_collector.py
-│   │   └── model_drift_detector.py
-│   ├──pages/
-│   │   ├── home.py
-│   │   ├── about.py
-│   │   ├── analytics.py
-│   │   ├── recommendations.py
-│   │   └── system_monitoring.py
-│   └──utils/
-│       ├── data_loader.py
-│       ├── examples.py
-│       ├── formatters.py
-│       ├── history.py
-│       ├── logger.py
-│       ├── plotting.py
-│       ├── recommendations.py
-│       └── session.py
+│   │   ├── alert_manager.py             # Configura alertas no sistema
+│   │   ├── config.py                    # Configurações de monitoramento
+│   │   ├── metrics_collector.py         # Coletor de métricas da máquina
+│   │   └── model_drift_detector.py      # Detector de drift do modelo
+│   ├── components/
+│   │   ├── header.py                    # Header padronizada
+│   │   └──  layout.py                   # CSS + componentes
+│   ├──config/
+│   │   └── examples.json                # Json com exemplos por indústria
+│   ├──utils/
+│   │    ├── data_loader.py              # Carregar dados refined para eda analysis
+│   │    ├── examples.py                 # Carregar Json com exemplos
+│   │    ├── formatters.py               # Formatação dos dados
+│   │    ├── history.py                  # Histórico de requisições
+│   │    ├── logger.py                   # Log de erros e status
+│   │    ├── plotting.py                 # Config gráficos eda analysis
+│   │    ├── recommendations.py          # Formatação de recomendações
+│   │    └── session.py                  # Inicializa engine e carrega dados
+│   └──home.py                           # Landing page
+│   
+├── 📂 models/                          # Modelos treinados
+│   ├── recommendation_engine.pkl        # TF-IDF model (15.9 MB)
+│   └── model_metadata.json              # Metadados
 │
-├── notebooks/
-│   ├── 01_data_generation.ipynb
-│   ├── 02_data_quality_soda.ipynb
-│   ├── 03_data_transformation.ipynb
-│   ├── 04_feature_engineering.ipynb
-│   ├── 05_eda_analysis.ipynb
-│   ├── 06_similarity_model.ipynb
-│   └── 07_postgres.ipynb
+├── 📂 tests/                           # Testes automatizados
+│   ├── test_api.py                      # testes de api
+│   ├── test_data_quality.py             # teste de qualidade e padronização dos dados
+│   ├── test_monitoring.py               # testes do sistema de monitoramento
+│   └── test_recommendation_engine.py    # testes do modelo de recomendação
 │
-├── src/
-│   ├── recommendation_engine.py
-│   └── api.py
+├── 📂 docs/                            # Documentação técnica
+│   ├── README.md                        # Este arquivo
+│   ├── arquitetura.md                   # Arquitetura Medallion
+│   ├── modelagem_dados.md               # Star Schema (Kimball)
+│   ├── planejamento.md                  # Roadmap & Cronograma
+│   ├── analytics-fase5.md               # EDA & Insights
+│   ├── avaliacao-fase6.md               # ML Model Performance
+│   ├── data_app-fase7.md                # Streamlit Components
+│   └── monitoring-fase8.md              # Monitoring & Alertas
 │
-├── models/
-│   ├── recommendation_engine.pkl  # TF-IDF modelo (15.9 MB)
-│   └── model_metadata.json
+├── 📂 outputs/                         # Artefatos gerados
+│   └── [20+ gráficos PNG]
 │
-├── tests/
-│   ├── test_api.py
-│   ├── test_recommendation_engine.py
-│   └── test_integration.py
-│
-├── docs/
-│   ├── arquitetura.md
-│   ├── modelagem_dados.md
-│   ├── planejamento.md
-│   ├── analytics-fase5.md
-│   ├── avaliacao-fase6.md
-│   ├── data_app-fase7.md
-│   └── monitoring-fase8.md
-│
-├── outputs/
-│   └── [20+ visualizações PNG]
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
+├── requirements.txt                     # Dependências Python
+├── .gitignore                           # Git ignore
+└── LICENSE                              # MIT License
 ```
 
 ---
@@ -415,7 +417,7 @@ projeto-ddf-tech-2025/
 ### Fases Concluídas
 
 | Fase | Duração | Entregas | Status |
-
+| ---- | ------- | -------- | ------ |
 | 1. Data Generation | 1 dia | 135K registros | COMPLETED |
 | 2. Data Quality | 1 dia | 99.7% conformidade | COMPLETED |
 | 3. Data Transformation | 1 dia | Trusted Zone | COMPLETED |
@@ -470,7 +472,7 @@ projeto-ddf-tech-2025/
 A arquitetura foi validada para escalar até **100.000+ produtos** sem redesign:
 
 | Aspecto | Atual | Futuro | Validado |
-
+| ------- | ----- | ------ | -------- |
 | Produtos | 10.000 | 100.000+ | OK |
 | Clientes | 5.000 | 50.000+ | OK |
 | Transações | 120.000 | 1.000.000+ | OK |
@@ -524,7 +526,7 @@ soda-core-duckdb==3.5.6
 
 A arquitetura técnica do **Data Driven Bearings** implementa as melhores práticas de **data engineering** com qualidade, escalabilidade e segurança. Com **8 fases concluídas com sucesso** e **100% de testes passando**, a plataforma está pronta para deploy.
 
---- 
+---
 
 ## Informações do Projeto
 
@@ -532,22 +534,14 @@ A arquitetura técnica do **Data Driven Bearings** implementa as melhores práti
 - **Escopo:** 8 Fases completas
 - **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 22 de Janeiro de 2026
+- **Data de Atualização:** 28 de Janeiro de 2026
 - **Versão:** 2.0
 
----
-## IAs Utilizadas no Projeto
+**IAs Utilizadas no Projeto:**
 
-- Perplexity PRO
-Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
+- **Perplexity PRO** - Pesquisa aprofundada e levantamento de referências
+- **Claude** - Validação de documentação e revisão estrutural
+- **ChatGPT** - Geração de escopo inicial e planejamento
+- **Manus.ai** - Construção e refinamento do código-fonte
 
-- Claude
-Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
-
-- ChatGPT
-Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
-
-- Manus.ai
-Utilizada na construção, validação e refinamento do código-fonte do projeto.
-
-**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**
+**Nota:** As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio.

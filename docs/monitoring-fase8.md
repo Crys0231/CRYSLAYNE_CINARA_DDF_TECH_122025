@@ -1,7 +1,7 @@
 # DDF Tech 2025 - Data Driven Bearings
 ## Sistema de Monitoramento - Fase 8
 
-**Data:** 22/01/2026 
+**Data:** 28/01/2026 
 **Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
@@ -90,7 +90,7 @@ O **MetricsCollector** é responsável por capturar eventos de todo o sistema em
 ### 1.2 Tipos de Eventos Capturados
 
 | Evento | Campos | Frequência | Uso |
-
+| ------ | ------ | ---------- | --- |
 | **prediction** | timestamp, user_id, query_length, num_results, top_score, processing_time_ms, query_preview | Por recomendação | Analytics, Drift Detection |
 | **user_feedback** | timestamp, prediction_id, feedback, rating | Por feedback | Qualidade, Treinamento |
 | **system_health** | timestamp, status, cpu_usage_percent, memory_usage_percent, response_time_ms | A cada 30s | Alertas, Dashboard |
@@ -204,7 +204,7 @@ Drift detectado se: Ratio > 2.0  (variância duplicada)
 ### 2.3 Componentes do Detector
 
 | Componente | Descrição | Default |
-
+| ---------- | --------- | ------- |
 | **window_size** | Janela deslizante (últimos N scores) | 100 |
 | **baseline_mean** | Média histórica para comparação | Definido via `set_baseline()` |
 | **baseline_std** | Desvio padrão histórico | Definido via `set_baseline()` |
@@ -291,7 +291,7 @@ O **AlertManager** gerencia o ciclo de vida completo de alertas com 3 níveis de
 ### 3.2 Níveis de Severidade
 
 | Nível | Valor | Exemplo | Ação |
-
+| ----- | ----- | ------- | ---- |
 | **INFO** | "info" | Métrica normalizada | Log apenas |
 | **WARNING** | "warning" | CPU > 60%, Latência > 3s | Notificar |
 | **CRITICAL** | "critical" | CPU > 80%, Drift detectado, Modelo degradou | Alertar + Auto-ação |
@@ -694,22 +694,18 @@ Cálculo: (100 - CPU% + 100 - Memory%) / 2
 
 Tabela com todos os alertas não resolvidos:
 
-```
-┌─────────────┬───────────────────────────┬─────────────┬────────────────┐
-│ Severidade  │ Métrica                   │ Valor Atual │ Limite         │
-├─────────────┼───────────────────────────┼─────────────┼────────────────┤
-│ 🔴 CRITICAL │ CPU em 85.5%              │ 85.5%       │ < 80%          │
-│ ⚠️  WARNING  │ Tempo de Processamento    │ 6500ms      │ < 5000ms       │
-│ ℹ️  INFO     │ Métrica normalizada       │ OK          │ -              │
-└─────────────┴───────────────────────────┴─────────────┴────────────────┘
-```
+| Severidade | Métrica | Valor Atual | Limite |
+| ---------- | ------- | ----------- | ------ |
+| 🔴 CRITICAL | CPU em 85.5% | 85.5% | < 80% |
+| ⚠️  WARNING | Tempo de Processamento | 6500ms | < 5000ms |
+| ℹ️  INFO | Métrica normalizada | OK | - |
 
 #### 6.1.4 Detecção de Drift
 
 Status visual + estatísticas:
 
 ```
-🔍 Model Drift Detection
+Model Drift Detection
 
 Status: SEM DRIFT DETECTADO
 
@@ -748,11 +744,11 @@ CPU Usage          Memory Usage       Disk Usage
 #### 6.1.7 Logs em Tempo Real
 
 ```
-[17:40:23] ✅ Recommendation tracked: 3 results (0.92 top score) in 2.8ms
-[17:40:45] 📊 System health: healthy - CPU 45.3%, Memory 72.1%
-[17:41:00] 🔍 Drift detection: No drift detected (Z=0.145)
-[17:41:15] ⚠️  ALERT: High memory usage (72.1% > 68%)
-[17:42:00] ✅ Alert auto-resolved: Memory normalized (65.3%)
+[17:40:23] Recommendation tracked: 3 results (0.92 top score) in 2.8ms
+[17:40:45] System health: healthy - CPU 45.3%, Memory 72.1%
+[17:41:00] Drift detection: No drift detected (Z=0.145)
+[17:41:15] ALERT: High memory usage (72.1% > 68%)
+[17:42:00] Alert auto-resolved: Memory normalized (65.3%)
 ```
 
 ---
@@ -877,7 +873,7 @@ print(f"Motivo: {drift.get('reason', 'N/A')}")
 ### 8.2 Métricas de Sucesso
 
 | Métrica | Target | Status |
-
+| ------- | ------ | ------ |
 | **Overhead de Latência** | < 5ms | 2-3ms típico |
 | **Taxa de Falsos Positivos** | < 5% | < 2% (tuning necessário) |
 | **Detecção de Drift** | Z=2.0+ | 95% confiança estatística |
@@ -929,7 +925,7 @@ if datetime.now() - st.session_state.last_cleanup > timedelta(hours=1):
 ### 9.2 Troubleshooting
 
 | Problema | Causa | Solução |
-
+| -------- | ----- | ------- |
 | **Dashboard vazio** | `monitor` não inicializado | Verificar `if 'monitor' in st.session_state` |
 | **Drift detectado falso** | Baseline muito pequeno (<50) | Usar `historical_scores` com 300+ amostras |
 | **Muitos alertas duplicados** | Cache expirou muito rápido | Aumentar `_cache_duration_minutes` |
@@ -941,7 +937,7 @@ if datetime.now() - st.session_state.last_cleanup > timedelta(hours=1):
 ## SUMÁRIO FINAL
 
 | Componente | Linhas | Responsabilidade | Status |
-
+| ---------- | ------ | ---------------- | ------ |
 | **MetricsCollector** | 150 | Captura de eventos | Produção |
 | **DriftDetector** | 200 | Detecção de degradação | Produção |
 | **AlertManager** | 350 | Gerenciamento de alertas | Produção |
@@ -973,23 +969,14 @@ if datetime.now() - st.session_state.last_cleanup > timedelta(hours=1):
 - **Escopo:** 8 Fases completas
 - **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 22 de Janeiro de 2026
+- **Data de Atualização:** 28 de Janeiro de 2026
 - **Versão:** 2.0
 
----
+**IAs Utilizadas no Projeto:**
 
-## IAs Utilizadas no Projeto
+- **Perplexity PRO** - Pesquisa aprofundada e levantamento de referências
+- **Claude** - Validação de documentação e revisão estrutural
+- **ChatGPT** - Geração de escopo inicial e planejamento
+- **Manus.ai** - Construção e refinamento do código-fonte
 
-- Perplexity PRO
-Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
-
-- Claude
-Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
-
-- ChatGPT
-Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
-
-- Manus.ai
-Utilizada na construção, validação e refinamento do código-fonte do projeto.
-
-**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**
+**Nota:** As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio.

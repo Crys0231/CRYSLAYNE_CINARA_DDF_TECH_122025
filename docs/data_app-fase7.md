@@ -1,7 +1,7 @@
 # DDF Tech 2025 - Data Driven Bearings
 ## Data App Streamlit - Fase 7
 
-**Data:** 22/01/2026 
+**Data:** 28/01/2026 
 **Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
@@ -29,25 +29,33 @@ com monitoramento, a aplicação oferece experiência fluida e informativa.
 ### 1.1 Estrutura de Diretórios
 
 \`\`\`
-data_app/
-├── pages/
-│   ├── home.py              # Landing page
-│   ├── recommendations.py   # Motor de recomendações
-│   ├── analytics.py         # Dashboard
-│   ├── about.py             # Sobre o projeto
-│   └── system_monitoring.py # Monitoramento
-│
-├── components/
-│   └── layout.py                  # CSS + componentes
-│
-├── utils/
-│   ├── session.py                 # Session state mgmt
-│   ├── history.py                 # Histórico
-│   ├── logger.py                  # Logging
-│   ├── plotting.py                # Matplotlib helpers
-│   └── examples.py                # Exemplos de queries
-│
-└── app.py                         # Entry point (se usado)
+├── 📂 data_app/                        # Aplicação Streamlit (Fase 7)
+│   ├── pages/
+│   │   ├── recommendations.py           # Motor de recomendações
+│   │   ├── analytics.py                 # Dashboard
+│   │   ├── about.py                     # Sobre o projeto
+│   │   └── system_monitoring.py         # Página de monitoramento
+│   ├──monitoring/
+│   │   ├── alert_manager.py             # Configura alertas no sistema
+│   │   ├── config.py                    # Configurações de monitoramento
+│   │   ├── metrics_collector.py         # Coletor de métricas da máquina
+│   │   └── model_drift_detector.py      # Detector de drift do modelo
+│   ├── components/
+│   │   ├── header.py                    # Header padronizada
+│   │   └──  layout.py                   # CSS + componentes
+│   ├──config/
+│   │   └── examples.json                # Json com exemplos por indústria
+│   ├──utils/
+│   │    ├── data_loader.py              # Carregar dados refined para eda analysis
+│   │    ├── examples.py                 # Carregar Json com exemplos
+│   │    ├── formatters.py               # Formatação dos dados
+│   │    ├── history.py                  # Histórico de requisições
+│   │    ├── logger.py                   # Log de erros e status
+│   │    ├── plotting.py                 # Config gráficos eda analysis
+│   │    ├── recommendations.py          # Formatação de recomendações
+│   │    └── session.py                  # Inicializa engine e carrega dados
+│   └──home.py                           # Landing page
+│ ...
 \`\`\`
 
 ### 1.2 Fluxo de Dados
@@ -136,12 +144,12 @@ st.markdown(get_global_css())
 #### Results Tabs
 
 | Aba | Conteúdo | Formato |
-
-| 📊 Ranking | Top produtos com scores | Dataframe |
-| 📈 Gráfico | Visualização de scores | Matplotlib |
-| 🎯 Comparação | Features técnicas | Heatmap |
-| 💾 Exportar | Download CSV/JSON | File download |
-| 📋 Detalhes | Especificações completas | Cards |
+| --- | -------- | ------- |
+| Ranking | Top produtos com scores | Dataframe |
+| Gráfico | Visualização de scores | Matplotlib |
+| Comparação | Features técnicas | Heatmap |
+| Exportar | Download CSV/JSON | File download |
+| Detalhes | Especificações completas | Cards |
 
 **Fluxo:**
 1. Usuário digita problema
@@ -336,7 +344,7 @@ if monitoring_status['active_alerts'] > 0:
 ### 6.1 Latência End-to-End
 
 | Componente | Latência | Total |
-
+| ---------- | -------- | ----- |
 | Input processing | <1ms | <1ms |
 | TF-IDF vectorization | <2ms | <3ms |
 | Cosine similarity | <1ms | <4ms |
@@ -385,14 +393,8 @@ def get_engine():
 **Executar localmente:**
 \`\`\`bash
 cd project_root
-streamlit run data_app/pages/01_🏠_home.py
+streamlit run data_app/pages/home.py
 \`\`\`
-
-**Adicionar nova página:**
-1. Criar arquivo em `data_app/pages/NN_📌_page_name.py`
-2. Usar componentes de `layout.py`
-3. Importar utilities de `utils/`
-4. Adicionar ao sidebar em `layout.py`
 
 ---
 
@@ -401,7 +403,7 @@ streamlit run data_app/pages/01_🏠_home.py
 ### 8.1 Problemas Comuns
 
 | Problema | Causa | Solução |
-
+| -------- | ----- | ------- |
 | Session state vazio | Engine não carregado | Aguardar inicialização |
 | Recomendações lentas | CPU elevada | Verificar monitoramento |
 | Drift detectado | Dados mudaram | Retreinar modelo |
@@ -415,23 +417,14 @@ streamlit run data_app/pages/01_🏠_home.py
 - **Escopo:** 8 Fases completas
 - **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 22 de Janeiro de 2026
+- **Data de Atualização:** 28 de Janeiro de 2026
 - **Versão:** 2.0
 
----
+**IAs Utilizadas no Projeto:**
 
-## IAs Utilizadas no Projeto
+- **Perplexity PRO** - Pesquisa aprofundada e levantamento de referências
+- **Claude** - Validação de documentação e revisão estrutural
+- **ChatGPT** - Geração de escopo inicial e planejamento
+- **Manus.ai** - Construção e refinamento do código-fonte
 
-- Perplexity PRO
-Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
-
-- Claude
-Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
-
-- ChatGPT
-Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
-
-- Manus.ai
-Utilizada na construção, validação e refinamento do código-fonte do projeto.
-
-**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**
+**Nota:** As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio.

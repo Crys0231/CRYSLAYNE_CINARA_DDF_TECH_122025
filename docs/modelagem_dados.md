@@ -1,7 +1,7 @@
 # DDF Tech 2025 - Data Driven Bearings
 ## Estrutura de dados
 
-**Data:** 22/01/2026 
+**Data:** 28/01/2026 
 **Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
@@ -10,7 +10,7 @@
 
 ## Resumo
 
-A modelagem de dados segue o padrão **dimensional (Kimball)** com **Star Schema** implementado em 3 tabelas (1 fato + 2 dimensões), estruturando catálogo técnico de rolamentos (10.000), clientes (5.000) e 120 mil transações de vendas. A modelagem integra análise descritiva, recomendação baseada em problemas técnicos e suporte a machine learning com embeddings TF-IDF.
+A modelagem de dados segue a metodologia **Kimball** com **Star Schema** implementado em 3 tabelas (1 fato + 2 dimensões), estruturando catálogo técnico de rolamentos (10.000), clientes (5.000) e 120 mil transações de vendas. A modelagem segue o padrão **Medallion** e integra análise descritiva, recomendação baseada em problemas técnicos e suporte a machine learning com embeddings TF-IDF.
 
 ---
 
@@ -87,7 +87,7 @@ A modelagem estrutura informações para:
 **Dados brutos, sem tratamento**
 
 | Arquivo | Registros | Campos | Características |
-
+| ------- | --------- | ------ | --------------- |
 | `products_raw.json` | 10.000 | 14 | JSON, sem validação |
 | `customers_raw.csv` | 5.000 | 13 | CSV, sem normalização |
 | `sales_raw.csv` | 120.000 | 14 | CSV, sem limpeza |
@@ -99,7 +99,7 @@ A modelagem estrutura informações para:
 **Dados tratados e confiáveis**
 
 | Arquivo | Registros | Transformações |
-
+| ------- | --------- | -------------- |
 | `products_trusted.parquet` | 10.000 | Tipo, margens, descrição técnica |
 | `customers_trusted.parquet` | 5.000 | Tipo, mapeamento indústria |
 | `sales_trusted.parquet` | 120.000 | Data normalizada, validações |
@@ -119,7 +119,7 @@ A modelagem estrutura informações para:
 **Dados modelados para análise**
 
 | Tabela | Registros | Tipo | Função |
-
+| ------ | --------- | ---- | ------ |
 | `dim_product` | 10.000 | Dimensão  | Características técnicas e comerciais |
 | `dim_customer` | 5.000 | Dimensão  | Contexto industrial e operacional |
 | `fact_sales` | 120.000 | Fato  | Eventos de vendas |
@@ -141,7 +141,7 @@ A modelagem estrutura informações para:
 **Volume:** 10.000 registros
 
 | Campo | Tipo | Descrição | Cripto |
-
+| ----- | ---- | --------- | ------ |
 | **product_id** (PK) | string | Identificador único | NÃO |
 | **product_name** | string | Nome comercial | NÃO |
 | **product_category** | string | Categoria principal | NÃO |
@@ -189,7 +189,7 @@ A modelagem estrutura informações para:
 **Volume:** 5.000 registros
 
 | Campo | Tipo | Descrição | Cripto |
-
+| ----- | ---- | --------- | ------ |
 | **customer_id** (PK) | string | Identificador único | NÃO |
 | **company_name** | string | Nome da empresa | SIM |
 | **industry** | string | Setor industrial | NÃO |
@@ -210,7 +210,7 @@ A modelagem estrutura informações para:
 **Novo campo estratégico** que mapeia problemas esperados por indústria:
 
 | Indústria | Problemas Esperados |
-
+| --------- | ------------------- |
 | Siderurgia | Vibração, Desgaste, Corrosão |
 | Alimentos | Contaminação, Corrosão, Higiêne |
 | Mineração | Desgaste, Contaminação, Vibração |
@@ -235,7 +235,7 @@ A modelagem estrutura informações para:
 *(Pedidos com múltiplos produtos = múltiplas linhas)*
 
 | Campo | Tipo | Descrição | Cripto |
-
+| ----- | ---- | --------- | ------ |
 | **sale_id** (PK) | string | Identificador único | NÃO |
 | **sale_date** | date | Data da venda | NÃO |
 | **customer_id** (FK) | string | Referência cliente | SIM |
@@ -277,7 +277,7 @@ Status:
 **Enriquecimento de dados para ML:**
 
 | Campo | Origem | Uso |
-
+| ----- | ------ | --- |
 | technical_description | LLM + manual | Fonte para TF-IDF |
 | technical_features | LLM extraction | Features categóricas |
 | supported_problems | LLM generation | Matching queries |
@@ -304,7 +304,7 @@ Top-K com scores (0.316 - 0.330)
 **Insights gerados:**
 
 | Insight | Descoberta | Ação |
-
+| ------- | ---------- | ---- |
 | **I1 - Low Performers** | 10 produtos com 2-3 vendas | Descontinuar |
 | **I2 - VIP Clients** | Top 10 = 14% receita | Programa VIP |
 | **I3 - Market Anchors** | Siderurgia 13.5% | Foco Marketing |
@@ -345,7 +345,7 @@ Top-K com scores (0.316 - 0.330)
 ### 6.2 Sistema de Alertas
 
 | Alerta            | Condição              | Severidade | Ação                     |
-
+| ----------------- | --------------------- | ---------- | ------------------------ |
 | High CPU          | CPU > 80%             | WARNING    | Log + Dashboard          |
 | Critical Memory   | Memory > 85%          | CRITICAL   | Log + Notify + Dashboard |
 | Data Drift        | Score std > threshold | WARNING    | Log + Dashboard          |
@@ -399,7 +399,7 @@ models/
 **ML baseado em similaridade:**
 
 | Capacidade | Input | Output |
-
+| ---------- | ----- | ------ |
 | Recomendação | Query natural | Top-K com scores |
 | Ranking | Problema descrito | Produtos ordenados |
 | Multi-idioma | Português/Inglês/Espanhol | Consistente |
@@ -429,7 +429,7 @@ Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o
 ### 9.1 Chaves Primárias
 
 | Tabela | Campo | Validação | Status |
-
+| ------ | ----- | --------- | ------ |
 | `dim_product` | product_id | Unicidade | 100% |
 | `dim_customer` | customer_id | Unicidade | 100% |
 | `fact_sales` | sale_id | Unicidade | 100% |
@@ -437,14 +437,14 @@ Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o
 ### 9.2 Chaves Estrangeiras
 
 | FK | Referência | Conformidade | Status |
-
+| -- | ---------- | ------------ | ------ |
 | `fact_sales.customer_id` → `dim_customer` | 5.000 únicos | 100% |
 | `fact_sales.product_id` → `dim_product` | 10.000 únicos | 100% |
 
 ### 9.3 Regras de Negócio
 
 | Regra | Validação | Resultado |
-
+| ----- | --------- | --------- |
 | Margens | list_price > unit_cost | 99.7% (359 corrigidas) |
 | Preços | total_price = quantity × unit_price | 100% |
 | Descontos | 0 ≤ discount ≤ 100 | 100% |
@@ -457,7 +457,7 @@ Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o
 ### 10.1 Criptografia (Dadosfera AES-256)
 
 | Campo | Motivo |
-
+| ----- | ------ |
 | company_name | PII - Nome empresa |
 | unit_cost | Financeiro |
 | list_price | Financeiro |
@@ -481,7 +481,7 @@ Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o
 ### 11.1 Capacidade Atual vs Futura
 
 | Aspecto | Atual | Futuro | 
-
+| ------- | ----- | ------ | 
 | Produtos | 10.000 | 100.000+ |
 | Clientes | 5.000 | 50.000+ | 
 | Transações | 120.000 | 1.000.000+ |
@@ -502,7 +502,7 @@ Ela representa uma base sólida para demonstrar como a Dadosfera pode acelerar o
 ### Arquivos Relacionados
 
 | Documento | Foco | Referência |
-
+| --------- | ---- | ---------- |
 | `arquitetura.md` | Camadas e tecnologia | Medallion pattern |
 | `planejamento.md` | Roadmap e fases | Fase 4: Feature eng |
 | `analytics-fase5.md` | Análises e insights | EDA detalhada |
@@ -532,23 +532,14 @@ A estrutura é **sólida, viável e extensível** para evolução futura.
 - **Escopo:** 8 Fases completas
 - **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 22 de Janeiro de 2026
+- **Data de Atualização:** 28 de Janeiro de 2026
 - **Versão:** 2.0
 
----
+**IAs Utilizadas no Projeto:**
 
-## IAs Utilizadas no Projeto
+- **Perplexity PRO** - Pesquisa aprofundada e levantamento de referências
+- **Claude** - Validação de documentação e revisão estrutural
+- **ChatGPT** - Geração de escopo inicial e planejamento
+- **Manus.ai** - Construção e refinamento do código-fonte
 
-- Perplexity PRO
-Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
-
-- Claude
-Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
-
-- ChatGPT
-Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
-
-- Manus.ai
-Utilizada na construção, validação e refinamento do código-fonte do projeto.
-
-**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**
+**Nota:** As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio.

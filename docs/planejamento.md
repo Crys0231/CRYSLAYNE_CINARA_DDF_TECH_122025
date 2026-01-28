@@ -1,7 +1,7 @@
 # DDF Tech 2025 - Data Driven Bearings
 ## Planejamento do Projeto - Roadmap e Estratégia
 
-**Data:** 22/01/2026 
+**Data:** 28/01/2026 
 **Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
@@ -26,7 +26,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 ### 1.3 Escopo INCLUÍDO
 
 | Componente | Status |
-
+| ---------- | ------ |
 | Pipeline de dados (Raw → Trusted → Refined) | Completo |
 | Data Quality com 99.7% conformidade | Completo |
 | EDA com 20+ visualizações | Completo |
@@ -50,7 +50,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 **Resultados:**
 
 | Métrica | Esperado | Alcançado | Status |
-
+| ------- | -------- | --------- | ------ |
 | Registros de Produtos | ≥1.000 | 10.000 | EXCEEDS |
 | Registros de Clientes | ≥500 | 5.000 | EXCEEDS |
 | Registros de Vendas | ≥5.000 | 120.000 | EXCEEDS |
@@ -79,7 +79,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 **Validações Implementadas:**
 
 | Validação | Regra | Resultado |
-
+| --------- | ----- | --------- |
 | Completude | 0 nulos em críticos | 100% |
 | Chaves Primárias | Unicidade garantida | 100% |
 | Tipos de Dados | Conversão correta | 100% |
@@ -109,7 +109,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 
 **Transformações por Tabela:**
 | Tabela | Transformações | Registros | Status |
-
+| ------ | -------------- | --------- | ------ |
 | `products_trusted.parquet` | Tipo, margens, descr. técnica, features | 10.000 | OK |
 | `customers_trusted.parquet` | Tipo, mapeamento indústria, problemas esperados | 5.000 | OK |
 | `sales_trusted.parquet` | Data normalizada, validações, desconto | 120.000 | OK |
@@ -133,7 +133,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 
 **Features Criadas:**
 | Categoria | Campos | Total |
-
+| --------- | ------ | ----- |
 | Produto | 12 features técnicas + TF-IDF | 12 |
 | Cliente | industria, expected_problems, company_size, maintenance_model | 4 |
 | **Total** | **Campos derivados + embeddings** | **16** |
@@ -142,14 +142,14 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 - `technical_description`: Descrição técnica padronizada
 - `supported_problems`: Lista de problemas resolvidos
 - `expected_problems`: Problemas por indústria (novo)
-- `price_segment`: Segmentação Low/Mid/High
 
 **Entregáveis:**
-- Notebook: `notebooks/04_llm_feature_engineering.ipynb`
+- Notebook: `notebooks/04_feature_engineering.ipynb`
 - Arquivos: `data/refined/`
     - `dim_product.parquet`
     - `dim_customer.parquet`
     - `fact_sales.parquet`
+    - `products_features.parquet`
 
 
 **Próximas Ações:** Análise exploratória (Fase 5)
@@ -166,7 +166,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 **Análises Realizadas:**
 
 | Análise | Visualizações | Insights | Status |
-
+| ------- | ------------- | -------- | ------ |
 | Produtos | 5+ | Distribuição, correlações | OK |
 | Clientes | 5+ | Segmentação, criticidade | OK |
 | Vendas | 5+ | Série temporal, canais | OK |
@@ -176,7 +176,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 **Métricas Gerais:**
 
 | KPI | Valor |
-
+| --- | ----- |
 | Receita Total | R$ 3.797.368.297 |
 | Ticket Médio | R$ 31.644 |
 | Período | 2023-2025 (36 meses) |
@@ -210,7 +210,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 
 **Arquitetura do Modelo:**
 | Componente | Especificação | Status |
-
+| ---------- | ------------- | ------ |
 | Algoritmo | TF-IDF + Cosine Similarity | OK |
 | Features | 1.000 (sparse matrix) | OK |
 | Produtos Indexados | 10.000 | OK |
@@ -228,7 +228,7 @@ POST /api/v1/batch-recommend    → Batch (até 50 queries)
 
 **Testes Automatizados:**
 | Tipo | Total | Passando | Taxa |
-
+| ---- | ----- | -------- | ---- |
 | Unitários | 9 | 9 | 100% |
 | Queries Teste | 5 | 5 | 100% |
 | Integração | 4 | 4 | 100% |
@@ -236,7 +236,7 @@ POST /api/v1/batch-recommend    → Batch (até 50 queries)
 
 **Performance:**
 | Métrica | Valor | SLA | Status |
-
+| ------- | ----- | --- | ------ |
 | Latência P50 | <3ms | <100ms | EXCEEDS |
 | Latência P95 | <5ms | <100ms | EXCEEDS |
 | Throughput | 1.000 req/s | ≥500 req/s | EXCEEDS |
@@ -271,7 +271,7 @@ POST /api/v1/batch-recommend    → Batch (até 50 queries)
 **Componentes Desenvolvidos:**
 
 | Página | Funcionalidade | Status |
-
+| ------ | -------------- | ------ |
 | home.py | Landing page + hero section | OK |
 | recommendations.py | Motor de recomendações (5 abas) | OK |
 | analytics.py | Dashboard de métricas | OK |
@@ -357,7 +357,7 @@ POST /api/v1/batch-recommend    → Batch (até 50 queries)
 **Arquitetura:**
 
 | Componente | Implementação | Status |
-
+| ---------- | ------------- | ------ |
 | Coleta de Métricas | StreamlitMonitor class | Produção |
 | Performance Tracking | Latência + Throughput | Real-time |
 | System Health | CPU, Memory, Disk | Real-time |
@@ -413,7 +413,7 @@ POST /api/v1/batch-recommend    → Batch (até 50 queries)
 ### 4.1 KPIs por Fase
 
 | Fase | Métrica | Alvo | Alcançado | Status |
-
+| ---- | ------- | ---- | --------- | ------ |
 | 1 | Registros Gerados | 135K | 135K | 100% |
 | 2 | Data Quality | ≥99% | 99.7% | EXCEEDS |
 | 3 | Transformações| 100% | 100% | 100% |
@@ -426,7 +426,7 @@ POST /api/v1/batch-recommend    → Batch (até 50 queries)
 ### 4.2 Conformidade Geral
 
 | Aspecto | Métrica | Valor | Alvo | Status |
-
+| ------- | ------- | ----- | ---- | ------ |
 | **Dados** | Completude | 100% | ≥99% | EXCEEDS |
 | **Dados** | Data Quality | 99.7% | ≥99% | EXCEEDS |
 | **Dados** | Integridade FK | 100% | ≥99% | EXCEEDS |
@@ -441,7 +441,7 @@ POST /api/v1/batch-recommend    → Batch (até 50 queries)
 ## 5. Riscos e Mitigação
 
 | Risco | Impacto | Prob. | Mitigação |
-
+| ----- | ------- | ----- | --------- |
 | Taxa aceitação <70% | Alto | Média | A/B testing em Fase 7 |
 | Performance degrada (100K+ prod) | Alto | Baixa | Caching + Redis |
 | Dados desatualizam | Médio | Alta | Retrainamento Q2/2026 |
@@ -489,7 +489,7 @@ pronto para deploy.
 ### Status Final: READY (100%)
 
 | Fase | Status | Score |
-
+| ---- | ------ | ----- |
 | 1 - Data Generation | CONCLUÍDO | 10/10 |
 | 2 - Data Quality | CONCLUÍDO | 10/10 |
 | 3 - Transformation | CONCLUÍDO | 10/10 |
@@ -508,23 +508,14 @@ pronto para deploy.
 - **Escopo:** 8 Fases completas
 - **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 22 de Janeiro de 2026
+- **Data de Atualização:** 28 de Janeiro de 2026
 - **Versão:** 2.0
 
----
+**IAs Utilizadas no Projeto:**
 
-## IAs Utilizadas no Projeto
+- **Perplexity PRO** - Pesquisa aprofundada e levantamento de referências
+- **Claude** - Validação de documentação e revisão estrutural
+- **ChatGPT** - Geração de escopo inicial e planejamento
+- **Manus.ai** - Construção e refinamento do código-fonte
 
-- Perplexity PRO
-Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
-
-- Claude
-Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
-
-- ChatGPT
-Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
-
-- Manus.ai
-Utilizada na construção, validação e refinamento do código-fonte do projeto.
-
-**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**
+**Nota:** As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio.

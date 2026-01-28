@@ -3,8 +3,8 @@
 **Plataforma Inteligente de Recomendação de Rolamentos com ML & Data Engineering**
 
 [![Status](https://img.shields.io/badge/Status-PRODUCTION%20READY-brightgreen?style=flat-square)](https://github.com)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=flat-square)](https://www.python.org)
-[![Last Updated](https://img.shields.io/badge/Last%20Updated-22%2F01%2F2026-blue?style=flat-square)](#)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square)](https://www.python.org)
+[![Last Updated](https://img.shields.io/badge/Last%20Updated-28%2F01%2F2026-blue?style=flat-square)](#)
 
 ---
 
@@ -18,7 +18,7 @@ Construir uma **Plataforma de Dados ponta-a-ponta** que centraliza múltiplas fo
 ### Status: 8/8 Fases Concluídas
 
 | Fase | Descrição | Status | Score |
-
+| ---- | --------- | ------ | ----- |
 | **1** | Data Generation (135K registros) | COMPLETED | 10/10 |
 | **2** | Data Quality (99.7% conformidade) | COMPLETED | 10/10 |
 | **3** | Data Transformation (Trusted Zone) | COMPLETED | 10/10 |
@@ -33,7 +33,7 @@ Construir uma **Plataforma de Dados ponta-a-ponta** que centraliza múltiplas fo
 ## Quick Start
 
 ### Pré-requisitos
-- Python 3.8+
+- Python 3.10+
 - pip ou conda
 - ~2GB RAM livre
 - Google Colab
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 - `fastapi==0.104.0` - API REST
 - `streamlit==1.28.0` - Data App
 - `pytest==7.4.0` - Testes
-- `soda-core-pandas-dask==3.5.6` - Data Quality
+- `soda-core-duckdb==3.5.6` - Data Quality
 
 ### 3️. Execute a Data App 
 
@@ -126,7 +126,6 @@ CRYSLAYNE_CINARA_DDF_TECH_122025/
 │   ├── components/
 │   │   ├── header.py                    # Header padronizada
 │   │   └──  layout.py                   # CSS + componentes
-│   │                
 │   ├──config/
 │   │   └── examples.json                # Json com exemplos por indústria
 │   ├──utils/
@@ -195,7 +194,7 @@ PRODUCTION LAYER (API REST + Streamlit)
 **Algoritmo:** TF-IDF + Cosine Similarity
 
 | Aspecto | Especificação |
-
+| ------- | ------------- |
 | **Algoritmo** | TF-IDF Vectorizer + Cosine Similarity |
 | **Features** | 1.000 (sparse matrix) |
 | **Produtos Indexados** | 10.000 |
@@ -230,7 +229,7 @@ Body: {queries: ["vibração", "desgaste"], top_k: 5}
 ### Data App Streamlit - 5 Páginas
 
 | Página | Objetivo | Componentes |
-
+| ------ | -------- | ----------- |
 | **Home** | Landing page | Hero section, CTA, stack tech |
 | **Recommendations** | Motor de recomendações | Input, 5 abas de resultados |
 | **Analytics** | Dashboard de uso | KPIs, gráficos dinâmicos |
@@ -273,7 +272,7 @@ system_monitoring.py (Dashboard Streamlit)
 ### Dados
 
 | Métrica | Valor |
-
+| ------- | ----- |
 | **Total de Registros** | 135.000 |
 | **Produtos** | 10.000 |
 | **Clientes** | 5.000 |
@@ -285,7 +284,7 @@ system_monitoring.py (Dashboard Streamlit)
 ### Qualidade
 
 | Métrica | Valor | Alvo | Status |
-
+| ------- | ----- | ---- | ------ |
 | **Data Quality Score** | 99.7% | ≥99% | EXCEEDS |
 | **Completude** | 100% | ≥95% | EXCEEDS |
 | **Integridade Referencial** | 100% | ≥99% | EXCEEDS |
@@ -294,7 +293,7 @@ system_monitoring.py (Dashboard Streamlit)
 ### Top 6 Insights Estratégicos
 
 | # | Insight | Descoberta | Ação |
-
+| - | ------- | ---------- | ---- |
 | **I1** | Low Performers | 10 produtos com 2-3 vendas | Descontinuar |
 | **I2** | VIP Clients | Top 10 clientes = 14% receita | Programa VIP |
 | **I3** | Market Anchors | Siderurgia 13.5% da receita | Foco marketing |
@@ -346,7 +345,7 @@ system_monitoring.py (Dashboard Streamlit)
 ### Technology Stack
 
 | Camada | Tecnologia | Status |
-
+| ------ | ---------- | ------ |
 | **Orquestração** | Jupyter Notebooks | 6 notebooks |
 | **Storage** | Parquet (Fastparquet) | 9 arquivos |
 | **Qualidade** | Soda Core | 10+ regras |
@@ -502,7 +501,7 @@ results = engine.batch_recommend(queries, top_k=5)
 ### Latência End-to-End
 
 | Componente | Latência | Total |
-
+| ---------- | -------- | ----- |
 | Request overhead | 0.5ms | 0.5ms |
 | TF-IDF vectorization | 0.8ms | 1.3ms |
 | Cosine similarity | 1.2ms | 2.5ms |
@@ -518,7 +517,7 @@ results = engine.batch_recommend(queries, top_k=5)
 ### Escalabilidade Validada
 
 | Aspecto | Atual | Futuro | Validado |
-
+| ------- | ----- | ------ | -------- |
 | Produtos | 10.000 | 100.000+ | 100% |
 | Clientes | 5.000 | 50.000+ | 100% |
 | Transações | 120.000 | 1.000.000+ | 100% |
@@ -553,7 +552,7 @@ results = engine.batch_recommend(queries, top_k=5)
 ### Documentos Técnicos
 
 | Arquivo | Conteúdo |
-
+| ------- | -------- |
 | **[arquitetura.md](docs/arquitetura.md)** | Padrão Medallion, Tech Stack, Componentes |
 | **[modelagem_dados.md](docs/modelagem_dados.md)** | Star Schema, Dimensões, Fatos |
 | **[planejamento.md](docs/planejamento.md)** | Roadmap, Cronograma, Status |
@@ -608,18 +607,12 @@ streamlit run data_app/pages/home.py
 
 ## Informações do Projeto
 
-| Item | Valor |
-
-| **Projeto** | DDF Tech 2025 - Data Driven Bearings |
-| **Escopo** | 8 Fases completas (Integração → Monitoramento) |
-| **Status** | PRODUCTION READY |
-| **Responsável** | Cryslayne Cinara |
-| **Data de Atualização** | 22 de Janeiro de 2026 |
-| **Versão** | 2.0 |
-
----
-
-## Agradecimentos
+- **Projeto:** DDF Tech 2025 - Data Driven Bearings
+- **Escopo:** 8 Fases completas
+- **Status:** **READY**
+- **Responsável:** Cryslayne Cinara
+- **Data de Atualização:** 28 de Janeiro de 2026
+- **Versão:** 2.0
 
 **IAs Utilizadas no Projeto:**
 
@@ -630,17 +623,10 @@ streamlit run data_app/pages/home.py
 
 **Nota:** As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio.
 
----
 
-## 📞 Contato
+**📞 Contato**
 
 - 📧 Email: cryslaynecinara0231@gmail.com
 - 💼 LinkedIn: [Cryslayne Cinara](https://www.linkedin.com/in/cryslayne-cinara-06a066226/)
 - 🐙 GitHub: [@Crys0231](https://github.com/Crys0231)
-
----
-
-**Última atualização:** 28 de Janeiro de 2026  
-**Status:** PRODUCTION READY  
-**Score Final:** 80/80 (100%)
 

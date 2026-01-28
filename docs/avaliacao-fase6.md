@@ -1,7 +1,7 @@
 # DDF Tech 2025 - Data Driven Bearings
 ## Avaliação do Modelo de Similaridade - Fase 6
 
-**Data:** 22/01/2026 
+**Data:** 28/01/2026 
 **Status Geral:** **COMPLETED**  
 **Responsável:** Cryslayne Cinara   
 **Versão:** 2.0
@@ -59,7 +59,7 @@ Output recomendações
 **Input:** "Máquina vibrando muito, preciso de um rolamento que resolva..."
 
 | Rank | Produto | Score | Observação |
-|------|---------|-------|-----------|
+|------|---------|-------|------------|
 | 1 | Rolamento Industrial 9412 | 0.328 (32.8%) | Relevante |
 | 2 | Rolamento Industrial 5637 | 0.327 (32.7%) | Relevante |
 | 3 | Rolamento Industrial 8863 | 0.321 (32.1%) | Relevante |
@@ -74,7 +74,7 @@ Output recomendações
 **Input:** "Superaquecimento no eixo, qual rolamento suporta alta temperatura..."
 
 | Rank | Produto | Score | Observação |
-|------|---------|-------|-----------|
+|------|---------|-------|------------|
 | 1 | Rolamento Industrial 2608 | 0.330 (33.0%) | Alta relevância |
 | 2 | Rolamento Industrial 3617 | 0.326 (32.6%) | Relevante |
 | 3 | Rolamento Industrial 1972 | 0.324 (32.4%) | Relevante |
@@ -89,7 +89,7 @@ Output recomendações
 **Input:** "Desgaste rápido, preciso de durabilidade e longa vida útil..."
 
 | Rank | Produto | Score | Observação |
-|------|---------|-------|-----------|
+|------|---------|-------|------------|
 | 1 | Rolamento Industrial 9788 | 0.323 (32.3%) | Relevante |
 | 2 | Rolamento Industrial 9131 | 0.323 (32.3%) | Relevante |
 | 3 | Rolamento Industrial 2756 | 0.321 (32.1%) | Relevante |
@@ -104,7 +104,7 @@ Output recomendações
 **Input:** "Ambiente úmido e contaminação, preciso de vedação..."
 
 | Rank | Produto | Score | Observação |
-|------|---------|-------|-----------|
+|------|---------|-------|------------|
 | 1 | Rolamento Industrial [Modelo] | 0.XXX | Testado |
 | 2 | Rolamento Industrial [Modelo] | 0.XXX | Testado |
 | 3 | Rolamento Industrial [Modelo] | 0.XXX | Testado |
@@ -371,23 +371,14 @@ tests/test_api.py (validações)
 - **Escopo:** 8 Fases completas
 - **Status:** **READY**
 - **Responsável:** Cryslayne Cinara
-- **Data de Atualização:** 22 de Janeiro de 2026
+- **Data de Atualização:** 28 de Janeiro de 2026
 - **Versão:** 2.0
 
----
+**IAs Utilizadas no Projeto:**
 
-## IAs Utilizadas no Projeto
+- **Perplexity PRO** - Pesquisa aprofundada e levantamento de referências
+- **Claude** - Validação de documentação e revisão estrutural
+- **ChatGPT** - Geração de escopo inicial e planejamento
+- **Manus.ai** - Construção e refinamento do código-fonte
 
-- Perplexity PRO
-Utilizada para pesquisa aprofundada, levantamento de referências e apoio na construção conceitual do projeto.
-
-- Claude
-Empregada na validação da documentação, revisão estrutural e apoio na consolidação do projeto.
-
-- ChatGPT
-Responsável pela geração do escopo inicial, planejamento do projeto e organização das ideias e requisitos.
-
-- Manus.ai
-Utilizada na construção, validação e refinamento do código-fonte do projeto.
-
-**As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio**
+**Nota:** As decisões finais, análises críticas e direcionamentos estratégicos foram conduzidos pela autora do projeto, com a IA atuando como ferramenta de apoio.
