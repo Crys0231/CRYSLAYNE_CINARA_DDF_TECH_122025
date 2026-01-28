@@ -10,7 +10,6 @@ import streamlit as st
 from utils.session import setup_paths, get_engine, get_data
 from components.layout import get_global_css, render_footer, render_sidebar
 from utils.history import ensure_history_exists
-import streamlit as st
 from monitoring import StreamlitMonitor
 
 # ============================================================================

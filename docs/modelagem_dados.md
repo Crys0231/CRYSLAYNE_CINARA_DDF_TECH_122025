@@ -105,6 +105,7 @@ A modelagem estrutura informações para:
 | `sales_trusted.parquet` | 120.000 | Data normalizada, validações |
 
 **Transformações Aplicadas:**
+- 359 campos com margem negativa - Regra de negócio normalizada (set list_price = unit_cost * 1.25 (margem mínima 25%))
 - Padronização de tipos de dados
 - Tratamento de valores nulos
 - Normalização de campos textuais
@@ -113,7 +114,7 @@ A modelagem estrutura informações para:
 
 **Conformidade:** 99.7% (359 erros corrigidos)
 
-### 3.3 Refined Zone (Modelagem) - `04_llm_feature_engineering.ipynb`
+### 3.3 Refined Zone (Modelagem) - `04_feature_engineering.ipynb`
 
 **Dados modelados para análise**
 

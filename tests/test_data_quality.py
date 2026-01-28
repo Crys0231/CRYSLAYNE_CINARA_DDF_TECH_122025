@@ -106,9 +106,6 @@ def test_customers_trusted_schema_and_quality():
         f"Encontrados apenas {unique_count} padrão(ões) único(s)."
     )
 
-
-
-
 def test_sales_trusted_schema_and_quality():
     """Valida schema e integridade da tabela sales_trusted."""
     df = pd.read_parquet(TRUSTED_DIR / "sales_trusted.parquet")

@@ -92,7 +92,7 @@ if MONITORING_AVAILABLE and 'monitor' not in st.session_state:
         logger.info(f"Média: {baseline_status['mean']:.3f}")
         
     except Exception as e:
-        logger.error(f"❌ Erro ao inicializar monitor: {e}")
+        logger.error(f"Erro ao inicializar monitor: {e}")
         st.session_state.monitor = None
 
 # Alias para uso mais fácil
@@ -114,16 +114,16 @@ def get_examples():
     try:
         examples = load_examples()
         # LOGGING
-        logger.info(f"✅ {len(examples)} categorias de exemplos carregadas")
+        logger.info(f"{len(examples)} categorias de exemplos carregadas")
         return examples
     except FileNotFoundError as e:
         # LOGGING DE ERRO
-        logger.error(f"❌ Arquivo de exemplos não encontrado: {e}", exc_info=True)
+        logger.error(f"Arquivo de exemplos não encontrado: {e}", exc_info=True)
         st.error(str(e))
         return {}
     except Exception as e:
         # LOGGING DE ERRO
-        logger.error(f"❌ Erro ao carregar exemplos: {e}", exc_info=True)
+        logger.error(f"Erro ao carregar exemplos: {e}", exc_info=True)
         st.error(f"❌ Erro ao carregar exemplos: {e}")
         return {}
 
@@ -274,10 +274,10 @@ if search_btn:
                         )
                         
                     except Exception as e:
-                        logger.error(f"❌ Erro no monitoramento: {e}")
+                        logger.error(f"Erro no monitoramento: {e}")
                 
                 if not recommendations:
-                    logger.warning(f"⚠️ Nenhuma recomendação encontrada para: {user_query[:50]}...")
+                    logger.warning(f"Nenhuma recomendação encontrada para: {user_query[:50]}...")
                     st.warning("⚠️ Nenhuma recomendação encontrada para sua descrição.")
                 else:
                     ensure_history_exists()

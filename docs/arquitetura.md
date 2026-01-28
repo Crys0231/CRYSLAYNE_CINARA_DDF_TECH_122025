@@ -371,9 +371,9 @@ projeto-ddf-tech-2025/
 │
 ├── notebooks/
 │   ├── 01_data_generation.ipynb
-│   ├── 02_data_quality.ipynb
+│   ├── 02_data_quality_soda.ipynb
 │   ├── 03_data_transformation.ipynb
-│   ├── 04_llm_feature_engineering.ipynb
+│   ├── 04_feature_engineering.ipynb
 │   ├── 05_eda_analysis.ipynb
 │   ├── 06_similarity_model.ipynb
 │   └── 07_postgres.ipynb
@@ -513,8 +513,9 @@ pytest==7.4.0
 pytest-cov==4.1.0
 matplotlib==3.8.0
 seaborn==0.13.0
-streamlit==1.28.0 (Fase 7)
-prometheus-client==0.18.0 (Fase 8)
+streamlit==1.28.0
+prometheus-client==0.18.0
+soda-core-duckdb==3.5.6
 ```
 
 ---

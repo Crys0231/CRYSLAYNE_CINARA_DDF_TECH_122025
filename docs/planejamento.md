@@ -93,7 +93,7 @@ O projeto atende à demanda de **decisões mais rápidas e informadas** no setor
 - 359 produtos com margem negativa → aplicado +25% markup automático
 
 **Entregas:**
-- Notebook: `notebooks/02_data_quality.ipynb`
+- Notebook: `notebooks/02_data_quality_soda.ipynb`
 - Relatório: Soda Core com 10+ regras de validação
 
 **Próximas Ações:** Limpeza e transformação (Fase 3)

@@ -206,7 +206,7 @@ def test_full_pipeline():
     print("="*60)
     
     # 1. Carregar os dados
-    data_path = root / 'data' / 'refined' / 'products_features.parquet'
+    data_path = ROOT_DIR / 'data' / 'refined' / 'products_features.parquet'
     
     if not data_path.exists():
         print(f"⚠ Base de dados não encontrada em: {data_path}")
@@ -258,7 +258,7 @@ def test_full_pipeline():
             print(f"     Score: {rec['score']:.4f}")
     
     # 5. Exportação
-    model_path = root / 'models' / 'recommendation_engine.pkl'
+    model_path = ROOT_DIR / 'models' / 'recommendation_engine.pkl'
     engine.save_model(str(model_path))
     print(f"\n✓ Modelo salvo em: {model_path}")
     
