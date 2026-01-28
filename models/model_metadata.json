@@ -1,6 +1,6 @@
 {
   "model_type": "TfidfVectorizer + CosineSimilarity",
-  "training_date": "2026-01-24T20:36:26.358259",
+  "training_date": "2026-01-28T19:43:24.018031",
   "num_products": 10000,
   "vocab_size": 1000,
   "params": {
