@@ -4,7 +4,7 @@
 
 [![Status](https://img.shields.io/badge/Status-PRODUCTION%20READY-brightgreen?style=flat-square)](https://github.com)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue?style=flat-square)](https://www.python.org)
-[![Last Updated](https://img.shields.io/badge/Last%20Updated-22%2F01%2F2026-blue?style=flat-square)](#)
+[![Last Updated](https://img.shields.io/badge/Last%20Updated-28%2F01%2F2026-blue?style=flat-square)](#)
 
 ---
 
@@ -18,7 +18,7 @@ Construir uma **Plataforma de Dados ponta-a-ponta** que centraliza múltiplas fo
 ### Status: 8/8 Fases Concluídas
 
 | Fase | Descrição | Status | Score |
-
+| ---- | --------- | ------ | ----- |
 | **1** | Data Generation (135K registros) | COMPLETED | 10/10 |
 | **2** | Data Quality (99.7% conformidade) | COMPLETED | 10/10 |
 | **3** | Data Transformation (Trusted Zone) | COMPLETED | 10/10 |
