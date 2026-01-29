@@ -361,7 +361,7 @@ if search_btn:
                                 'Score': f"⭐ {rec.get('score', 0):.1%}",
                                 'Tipo': rec.get('bearing_type', 'N/A'),
                                 'Preço': f"💰 R$ {rec.get('price', 0):,.2f}",
-                                'RPM': f"⚡ {rec.get('rpm_capacity', 0):,}",
+                                'RPM': f"⚡ {rec.get('max_speed', 0):,}",
                             })
                         
                         results_df = pd.DataFrame(results_data)
@@ -392,7 +392,7 @@ if search_btn:
                                     for i, rec in enumerate(top_5)]
                             scores = [rec.get('score', 0) * 100 for rec in top_5]  # Converter para porcentagem
                             prices = [rec.get('price', 0) for rec in top_5]
-                            rpm_values = [rec.get('rpm_capacity', 0) for rec in top_5]
+                            rpm_values = [rec.get('max_speed', 0) for rec in top_5]
                             
                             # Criar figura com múltiplos gráficos
                             fig = plt.figure(figsize=(14, 8))
@@ -555,7 +555,7 @@ if search_btn:
                                     <div style="color: #94A3B8; font-size: 13px;">
                                         <p style="margin: 6px 0;"><strong>Tipo:</strong> {rec.get('bearing_type', 'N/A')}</p>
                                         <p style="margin: 6px 0;"><strong>Preço:</strong> R$ {rec.get('price', 0):,.2f}</p>
-                                        <p style="margin: 6px 0;"><strong>RPM:</strong> {rec.get('rpm_capacity', 0):,}</p>
+                                        <p style="margin: 6px 0;"><strong>RPM:</strong> {rec.get('max_speed', 0):,}</p>
                                     </div>
                                     </div>
                                     """, unsafe_allow_html=True)
@@ -574,7 +574,7 @@ if search_btn:
                                 'Score': f"{rec.get('score', 0):.1%}",
                                 'Tipo': rec.get('bearing_type', 'N/A'),
                                 'Preço (R$)': f"{rec.get('price', 0):,.2f}",
-                                'RPM': rec.get('rpm_capacity', 0),
+                                'RPM': rec.get('max_speed', 0),
                                 'Descrição': rec.get('technical_description', '')[:40] if rec.get('technical_description') else 'N/A',
                             })
                         
@@ -616,7 +616,7 @@ if search_btn:
                                 with col2:
                                     st.metric("💰 Preço", f"R$ {rec.get('price', 0):,.0f}")
                                 with col3:
-                                    st.metric("⚡ RPM", f"{rec.get('rpm_capacity', 0):,}")
+                                    st.metric("⚡ RPM", f"{rec.get('max_speed', 0):,}")
                                 with col4:
                                     st.metric("📦 Tipo", rec.get('bearing_type', 'N/A'))
                                 
