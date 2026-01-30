@@ -52,16 +52,24 @@ def format_recommendations(recommendations, products_df):
             # Montar recomendação formatada
             max_speed = product_data.get('max_speed', 0) or product_data.get('rpm_capacity', 0)
             rpm_capacity = int(max_speed) if max_speed else 0
-            
+
             formatted.append({
                 'product_id': product_id,
                 'product_name': product_data.get('product_name', 'N/A'),
                 'bearing_type': product_data.get('bearing_type', 'N/A'),
-                'price': price, 
-                'score': float(rec.get('score', 0)),
+                
+                # Valores financeiros
+                'price': price,
+                'unit_cost': float(product_data.get('unit_cost', 0)),
+
+                # Métricas técnicas (NOMES CORRETOS)
+                'max_speed': int(product_data.get('max_speed', 0)),
+                'load_capacity': int(product_data.get('load_capacity', 0)),
+                'temperature_limit': int(product_data.get('temperature_limit', 0)),
+
+                # Conteúdo
                 'technical_description': product_data.get('technical_description', ''),
-                'rpm_capacity': rpm_capacity,
-                'unit_cost': float(product_data.get('unit_cost', 0)) if product_data.get('unit_cost') else 0,
+                'score': float(rec.get('score', 0)),
             })
         
         except Exception as e:

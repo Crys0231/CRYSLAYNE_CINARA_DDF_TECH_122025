@@ -35,19 +35,19 @@ def load_products_data():
         path = get_data_path('dim_products.parquet')
         
         if not os.path.exists(path):
-            print(f"⚠️ Arquivo não encontrado: {path}")
-            print("💡 Criando DataFrame de exemplo...")
+            print(f"Arquivo não encontrado: {path}")
+            print("Criando DataFrame de exemplo...")
             return create_sample_products()
         
         df = pd.read_parquet(path)
-        print(f"✅ {len(df)} produtos carregados")
+        print(f"{len(df)} produtos carregados")
         
-        # ✅ VALIDAÇÃO E PREENCHIMENTO DE PREÇOS
+        # VALIDAÇÃO E PREENCHIMENTO DE PREÇOS
         if 'list_price' not in df.columns:
-            print("⚠️ Coluna 'list_price' não encontrada")
+            print("Coluna 'list_price' não encontrada")
             if 'unit_cost' in df.columns:
                 df['list_price'] = df['unit_cost']
-                print("✅ Usando 'unit_cost' como 'list_price'")
+                print("Usando 'unit_cost' como 'list_price'")
             else:
                 df['list_price'] = 0
         
@@ -73,7 +73,7 @@ def load_products_data():
         for col, default in required_cols.items():
             if col not in df.columns:
                 df[col] = default
-                print(f"⚠️ Coluna '{col}' criada com valor padrão")
+                print(f"Coluna '{col}' criada com valor padrão")
         
         # Criar full_description para a engine
         if 'full_description' not in df.columns:
@@ -84,14 +84,14 @@ def load_products_data():
             )
         
         # Estatísticas
-        print(f"📊 Preços válidos: {(df['list_price'] > 0).sum()}")
-        print(f"📊 Preço médio: R$ {df['list_price'].mean():,.2f}")
-        print(f"📊 Preço máximo: R$ {df['list_price'].max():,.2f}")
-        
+        print(f"Preços válidos: {(df['list_price'] > 0).sum()}")
+        print(f"Preço médio: R$ {df['list_price'].mean():,.2f}")
+        print(f"Preço máximo: R$ {df['list_price'].max():,.2f}")
+
         return df
     
     except Exception as e:
-        print(f"❌ Erro ao carregar dados: {e}")
+        print(f"Erro ao carregar dados: {e}")
         return create_sample_products()
 
 def create_sample_products():
