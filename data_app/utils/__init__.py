@@ -47,7 +47,7 @@ from .logger import (
 
 # Importação condicional do recommendations (pode não existir em alguns contextos)
 try:
-    from .recommendations import format_recommendations
+    from .recommendations_functions import format_recommendations
     _HAS_RECOMMENDATIONS = True
 except ImportError:
     _HAS_RECOMMENDATIONS = False

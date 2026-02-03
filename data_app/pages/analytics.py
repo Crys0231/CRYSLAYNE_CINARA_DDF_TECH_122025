@@ -409,8 +409,7 @@ if st.session_state.history and len(st.session_state.history) > 0:
             data=csv,
             file_name=f'analytics_history_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv',
             mime='text/csv',
-            use_container_width=True,
-            type="primary"
+            use_container_width=True
         )
 
 else:
@@ -435,8 +434,7 @@ else:
         if st.button(
             "🔍 Ir para Recomendações →",
             use_container_width=True,
-            key="empty_state_cta",
-            type="primary"
+            key="empty_state_cta"
         ):
             st.switch_page("pages/recommendations.py")
     

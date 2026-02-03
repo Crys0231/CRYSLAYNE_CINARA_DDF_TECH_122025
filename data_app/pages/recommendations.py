@@ -12,6 +12,7 @@ from datetime import datetime
 import streamlit as st
 import time  # IMPORTANTE: para medir processing_time
 
+from data_app.utils.recommendations_functions import format_recommendations
 from data_app.utils.logger import setup_recommendations_logger
 from data_app.utils.session import setup_paths, get_engine, get_data
 from data_app.utils.history import ensure_history_exists
@@ -248,11 +249,15 @@ if search_btn:
                 start_time = time.time()
                 
                 # Gerar recomendações
-                recommendations = st.session_state.engine.recommend(
+                raw_recommendations = st.session_state.engine.recommend(
                     user_query, 
                     top_k=int(top_k)
                 )
-                
+                recommendations = format_recommendations(
+                    raw_recommendations,
+                    st.session_state.products_data
+                )
+
                 # FIM DO MONITORAMENTO
                 processing_time = time.time() - start_time
                 
@@ -631,7 +636,7 @@ if search_btn:
                                 with col1:
                                     st.metric("📊 Carga", f"{rec.get('load_capacity', 0):,.0f} N")
                                 with col2:
-                                    st.metric("💵 Custo", f"R$ {rec.get('unit_cost', 0):,.2f}")
+                                    st.metric("🔧 Fabricante", rec.get('manufacturer', 'N/A'))
             
             except Exception as e:
                 st.error(f"❌ Erro ao processar: {str(e)}")
