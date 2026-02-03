@@ -52,7 +52,7 @@ def format_recommendations(recommendations, products_df):
                     price = float(price_val)
             
             # ============================================================
-            # EXTRAÇÃO DE CAMPOS TÉCNICOS (CORRIGIDO)
+            # EXTRAÇÃO DE CAMPOS TÉCNICOS
             # ============================================================
             
             # max_speed (RPM)
@@ -72,7 +72,7 @@ def format_recommendations(recommendations, products_df):
             unit_cost_float = float(unit_cost) if pd.notna(unit_cost) and unit_cost > 0 else 0.0
             
             # ============================================================
-            # MONTAR RECOMENDAÇÃO FORMATADA COM TODOS OS CAMPOS
+            # MONTAR RECOMENDAÇÃO FORMATADA
             # ============================================================
             formatted.append({
                 # Identificação
