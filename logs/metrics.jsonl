@@ -123,3 +123,5 @@
 {"timestamp": "2026-02-03T17:24:10.444345", "event_type": "prediction", "user_id": "anonymous", "query_length": 99, "num_results": 10, "top_score": 0.22753128061830968, "processing_time_ms": 89.08438682556152, "query_preview": "Laminador com contamina\u00e7\u00e3o de p\u00f3, vibra\u00e7\u00e3o moderada, RPM 8000, necessita veda\u00e7\u00e3o, or\u00e7amento R$ 2500"}
 {"timestamp": "2026-02-03T17:24:50.756810", "event_type": "system_health", "status": "error", "cpu_usage_percent": 100.0, "memory_usage_percent": 85.4, "response_time_ms": 2.5}
 {"timestamp": "2026-02-03T17:25:02.514785", "event_type": "system_health", "status": "error", "cpu_usage_percent": 94.0, "memory_usage_percent": 86.1, "response_time_ms": 2.5}
+{"timestamp": "2026-02-05T16:56:24.055311", "event_type": "system_health", "status": "error", "cpu_usage_percent": 100.0, "memory_usage_percent": 91.6, "response_time_ms": 2.5}
+{"timestamp": "2026-02-05T17:27:30.264944", "event_type": "system_health", "status": "error", "cpu_usage_percent": 100.0, "memory_usage_percent": 92.3, "response_time_ms": 2.5}

@@ -17,16 +17,16 @@ Construir uma **Plataforma de Dados ponta-a-ponta** que centraliza múltiplas fo
 
 ### Status: 8/8 Fases Concluídas
 
-| Fase | Descrição | Status | Score |
-| ---- | --------- | ------ | ----- |
-| **1** | Data Generation (135K registros) | COMPLETED | 10/10 |
-| **2** | Data Quality (99.7% conformidade) | COMPLETED | 10/10 |
-| **3** | Data Transformation (Trusted Zone) | COMPLETED | 10/10 |
-| **4** | Feature Engineering (LLM + TF-IDF) | COMPLETED | 10/10 |
-| **5** | Analytics & EDA (20+ visualizações) | COMPLETED | 10/10 |
-| **6** | ML Model - Similaridade (TF-IDF) | COMPLETED | 10/10 |
-| **7** | Data App - Streamlit (5 páginas) | COMPLETED | 10/10 |
-| **8** | Monitoring & MLOps (Observabilidade) | COMPLETED | 10/10 |
+| Fase | Descrição |
+| ---- | --------- |
+| **1** | Data Generation (135K registros) |
+| **2** | Data Quality (99.7% conformidade) |
+| **3** | Data Transformation (Trusted Zone) |
+| **4** | Feature Engineering (LLM + TF-IDF) |
+| **5** | Analytics & EDA (20+ visualizações) |
+| **6** | ML Model - Similaridade (TF-IDF) |
+| **7** | Data App - Streamlit (5 páginas) |
+| **8** | Monitoring & MLOps (Observabilidade) |
 
 ---
 
